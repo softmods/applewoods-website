@@ -1756,7 +1756,8 @@ textarea.input {
   box-shadow: 0 18px 40px rgba(42, 23, 17, 0.16);
 }
 
-.v2-lang-menu button {
+.v2-lang-menu button,
+.v2-lang-menu a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1769,22 +1770,27 @@ textarea.input {
   font-family: var(--font-heading);
   font-size: 13px;
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
 }
 
 .v2-lang-menu button:hover,
-.v2-lang-menu button:focus-visible {
+.v2-lang-menu button:focus-visible,
+.v2-lang-menu a:hover,
+.v2-lang-menu a:focus-visible {
   background: var(--paper-deep);
 }
 
 /* Selected language: filled brand-tint state with a check, not just bold text. */
-.v2-lang-menu button.is-active {
+.v2-lang-menu button.is-active,
+.v2-lang-menu a.is-active {
   background: rgba(138, 108, 50, 0.12);
   color: #302318;
   font-weight: 600;
 }
 
-.v2-lang-menu button.is-active::after {
+.v2-lang-menu button.is-active::after,
+.v2-lang-menu a.is-active::after {
   content: "✓";
   color: #8a6c32;
   font-size: 12px;
