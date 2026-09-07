@@ -22,7 +22,7 @@ export function resolveVersion() {
 
 // Resolve { en, es } leaves to the active language; pass everything else through.
 // A plain string (not yet translated) returns as-is = English in both languages.
-function localize(node, lang) {
+export function localize(node, lang) {
   if (node === null || typeof node !== "object") return node;
   if (Array.isArray(node)) return node.map((n) => localize(n, lang));
   if (typeof node.en === "string") return node[lang] ?? node.en;
@@ -30,6 +30,8 @@ function localize(node, lang) {
   for (const key of Object.keys(node)) out[key] = localize(node[key], lang);
   return out;
 }
+
+export const buildContent = VERSIONS[BUILD_DEFAULT];
 
 const ContentContext = createContext(clientContent);
 const LangContext = createContext({ lang: DEFAULT_LANG, hrefFor: pathForLang, rememberLang: () => {} });

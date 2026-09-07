@@ -29,7 +29,7 @@ await build({
   build: { ssr: "src/entry-server.jsx", outDir: ssrDir, emptyOutDir: true },
 });
 
-const { render } = await import(pathToFileURL(path.join(ssrDir, "entry-server.js")).href);
+const { render, jsonLd } = await import(pathToFileURL(path.join(ssrDir, "entry-server.js")).href);
 const { SEO } = await import(pathToFileURL(path.join(root, "src/seo.js")).href);
 const { LANGS, DEFAULT_LANG, urlForLang, pathForLang } = await import(
   pathToFileURL(path.join(root, "src/lang.js")).href
@@ -62,6 +62,11 @@ for (const lang of LANGS) {
   html = replaceMeta(html, "name", "twitter:title", seo.title);
   html = replaceMeta(html, "name", "twitter:description", seo.description);
   html = html.replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${urlForLang(lang)}" />`);
+  const ld = jsonLd(lang);
+  const faq = ld["@graph"].find((n) => n["@type"] === "FAQPage");
+  if (!faq || faq.mainEntity.length < 10) throw new Error(`JSON-LD for "${lang}" has too few FAQ entries`);
+  const ldScript = `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>`;
+  html = html.replace("</head>", `    ${ldScript}\n  </head>`);
   if (!html.includes("<!--app-html-->")) throw new Error("index.html lost the <!--app-html--> marker");
   html = html.replace("<!--app-html-->", appHtml);
 

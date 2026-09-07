@@ -2,9 +2,11 @@ import React from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App";
 import { langFromPath } from "./lang";
+import { captureLeadSource } from "./lead-source";
 
 // The HTML for this URL was prerendered at build time (scripts/build.mjs), so
 // the client hydrates the existing markup instead of rendering from empty.
+captureLeadSource();
 const container = document.getElementById("root");
 const lang = langFromPath(window.location.pathname);
 const app = <App lang={lang} />;

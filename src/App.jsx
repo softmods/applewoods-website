@@ -6,6 +6,7 @@ import Lightbox from "./components/Lightbox";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import MobileMenu from "./components/MobileMenu";
 import { ContentProvider, useContent, useLang } from "./content";
+import { readLeadSource } from "./lead-source";
 import "./styles.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -1044,6 +1045,7 @@ function Contact() {
     const payload = {
       leadStage: "complete",
       ...formData,
+      ...readLeadSource(),
       lang,
       turnstileToken,
       fullName: formData.fullName.trim(),
