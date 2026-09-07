@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState, useMemo, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useMemo, useEffect } from "react";
 import { clientContent } from "./client";
 import { smcopyContent } from "./smcopy";
+import { DEFAULT_LANG, LANGS, LANG_STORAGE_KEY, pathForLang } from "../lang";
 
 const VERSIONS = { client: clientContent, smcopy: smcopyContent };
 const BUILD_DEFAULT = import.meta.env.VITE_DEFAULT_VERSION === "smcopy" ? "smcopy" : "client";
-const LANGS = ["en", "es"];
 
 export function resolveVersion() {
   if (typeof window === "undefined") return BUILD_DEFAULT;
@@ -20,15 +20,6 @@ export function resolveVersion() {
   return BUILD_DEFAULT;
 }
 
-function readStoredLang() {
-  if (typeof window === "undefined") return "en";
-  try {
-    const v = window.localStorage.getItem("aw_lang");
-    if (LANGS.includes(v)) return v;
-  } catch (e) {}
-  return "en";
-}
-
 // Resolve { en, es } leaves to the active language; pass everything else through.
 // A plain string (not yet translated) returns as-is = English in both languages.
 function localize(node, lang) {
@@ -41,26 +32,37 @@ function localize(node, lang) {
 }
 
 const ContentContext = createContext(clientContent);
-const LangContext = createContext({ lang: "en", setLang: () => {} });
+const LangContext = createContext({ lang: DEFAULT_LANG, hrefFor: pathForLang, rememberLang: () => {} });
 export const useContent = () => useContext(ContentContext);
 export const useLang = () => useContext(LangContext);
 
-export function ContentProvider({ children }) {
-  const [lang, setLangState] = useState(readStoredLang);
-  const setLang = useCallback((next) => {
-    if (!LANGS.includes(next)) return;
-    setLangState(next);
-    try { window.localStorage.setItem("aw_lang", next); } catch (e) {}
-  }, []);
-  // Keep <html lang> in sync so :lang() CSS, screen readers, and search
-  // engines see the active language.
+// Language comes from the URL (see src/lang.js), never from state. Switching
+// language is a navigation to the other prerendered page. The stored value only
+// decides where a returning visitor lands when they open the bare domain.
+export function ContentProvider({ lang: langProp, children }) {
+  const lang = LANGS.includes(langProp) ? langProp : DEFAULT_LANG;
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
   const base = VERSIONS[resolveVersion()] ?? clientContent;
   const content = useMemo(() => localize(base, lang), [base, lang]);
+  const value = useMemo(
+    () => ({
+      lang,
+      hrefFor: (next) => {
+        const hash = typeof window !== "undefined" ? window.location.hash : "";
+        const search = typeof window !== "undefined" ? window.location.search : "";
+        return pathForLang(next) + search + hash;
+      },
+      rememberLang: (next) => {
+        if (!LANGS.includes(next)) return;
+        try { window.localStorage.setItem(LANG_STORAGE_KEY, next); } catch (e) {}
+      },
+    }),
+    [lang]
+  );
   return (
-    <LangContext.Provider value={{ lang, setLang }}>
+    <LangContext.Provider value={value}>
       <ContentContext.Provider value={content}>{children}</ContentContext.Provider>
     </LangContext.Provider>
   );

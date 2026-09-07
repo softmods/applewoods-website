@@ -10,7 +10,7 @@
     <title>Apple Woods | Smart Living In Brownsville</title>
     <!-- Social link previews (Open Graph). Image is 16:9, under 300KB with
          declared dimensions so WhatsApp shows the large card, not the small
-         square. URLs must be absolute — update host when the domain transfers. -->
+         square. URLs must be absolute. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Apple Woods" />
     <meta property="og:title" content="Apple Woods | Smart Living In Brownsville" />
@@ -18,8 +18,15 @@
       property="og:description"
       content="Apple Woods is a smart residential community designed around security, comfort, beauty, technology, and attainable everyday luxury."
     />
-    <meta property="og:url" content="https://applewoods-website.vercel.app/" />
-    <meta property="og:image" content="https://applewoods-website.vercel.app/og-image.jpg" />
+    <meta property="og:url" content="https://www.applewoods.us/" />
+    <!-- Each language is its own URL (/ and /es), prerendered at build time.
+         scripts/build.mjs rewrites lang, title, description, og/twitter tags,
+         canonical, and og:url per language; hreflang links point at both. -->
+    <link rel="canonical" href="https://www.applewoods.us/" />
+    <link rel="alternate" hreflang="en" href="https://www.applewoods.us/" />
+    <link rel="alternate" hreflang="es" href="https://www.applewoods.us/es" />
+    <link rel="alternate" hreflang="x-default" href="https://www.applewoods.us/" />
+    <meta property="og:image" content="https://www.applewoods.us/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="675" />
     <meta property="og:image:type" content="image/jpeg" />
@@ -29,12 +36,24 @@
       name="twitter:description"
       content="Apple Woods is a smart residential community designed around security, comfort, beauty, technology, and attainable everyday luxury."
     />
-    <meta name="twitter:image" content="https://applewoods-website.vercel.app/og-image.jpg" />
+    <meta name="twitter:image" content="https://www.applewoods.us/og-image.jpg" />
     <!-- Preload the LCP hero so it starts downloading in parallel with the JS
          bundle. This is an SPA — the hero <img> only appears after React renders,
          so without this the browser can't discover it until the bundle executes. -->
     <link rel="preload" as="image" type="image/webp" href="/assets/hero-desktop.webp" media="(min-width: 761px)" fetchpriority="high" />
     <link rel="preload" as="image" type="image/webp" href="/assets/hero-mobile.webp" media="(max-width: 760px)" fetchpriority="high" />
+    <script>
+      // A visitor who picked Spanish earlier and opens the bare domain lands on
+      // /es. Only the root path redirects, so shared /es links and crawlers are
+      // never bounced. Picking English in the switcher clears this.
+      (function () {
+        try {
+          if (location.pathname === "/" && localStorage.getItem("aw_lang") === "es") {
+            location.replace("/es" + location.search + location.hash);
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/svg+xml" href="/aw-icon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -49,7 +68,7 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><!--app-html--></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
