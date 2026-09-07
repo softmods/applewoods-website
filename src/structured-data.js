@@ -44,27 +44,26 @@ export function structuredData(content, lang, { priceLabelsEn } = {}) {
   }));
 
   // Public list prices only. Negotiated prices never appear here or on the page.
-  const offers = content.phaseOne.lots
+  // Product with a nested AggregateOffer (lowPrice = "from" price) is the shape
+  // Google's Product snippets accept; a Product nested inside an Offer fails.
+  const products = content.phaseOne.lots
     .map((lot, i) => {
-      const minPrice = minPriceFrom(priceLabelsEn?.[i] ?? lot.price);
-      if (minPrice === null) return null;
+      const lowPrice = minPriceFrom(priceLabelsEn?.[i] ?? lot.price);
+      if (lowPrice === null) return null;
       return {
-        "@type": "Offer",
-        name: plain(lot.name),
+        "@type": "Product",
+        name: `Apple Woods ${plain(lot.name)}`,
         description: plain(lot.body),
-        url: `${pageUrl}#phase-one`,
-        availability: "https://schema.org/InStock",
-        priceCurrency: "USD",
-        priceSpecification: {
-          "@type": "PriceSpecification",
-          minPrice,
+        category: lang === "es" ? "Lote residencial" : "Residential homesite",
+        image: OG_IMAGE_URL,
+        brand: { "@id": orgId },
+        offers: {
+          "@type": "AggregateOffer",
+          url: `${pageUrl}#phase-one`,
           priceCurrency: "USD",
-        },
-        itemOffered: {
-          "@type": "Product",
-          name: `Apple Woods ${plain(lot.name)}`,
-          description: plain(lot.body),
-          category: lang === "es" ? "Lote residencial" : "Residential homesite",
+          lowPrice,
+          availability: "https://schema.org/InStock",
+          seller: { "@id": orgId },
         },
       };
     })
@@ -86,11 +85,6 @@ export function structuredData(content, lang, { priceLabelsEn } = {}) {
         areaServed: { "@type": "City", name: "Brownsville", address },
         sameAs: [FACEBOOK_URL],
         parentOrganization: { "@type": "Organization", name: "Park Street" },
-        hasOfferCatalog: {
-          "@type": "OfferCatalog",
-          name: lang === "es" ? "Lotes de la Fase 1" : "Phase 1 Homesites",
-          itemListElement: offers,
-        },
       },
       {
         "@type": "Place",
@@ -122,6 +116,7 @@ export function structuredData(content, lang, { priceLabelsEn } = {}) {
         about: { "@id": placeId },
         primaryImageOfPage: OG_IMAGE_URL,
       },
+      ...products,
       {
         "@type": "FAQPage",
         "@id": `${pageUrl}#faq`,
