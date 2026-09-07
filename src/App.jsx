@@ -703,6 +703,11 @@ function AmenityCard({ item, moreLabel, lessLabel }) {
           open ? (
             <div className="amenity-card-more">
               <Paras text={item.body} />
+              {item.bodyImage ? (
+                <figure className="amenity-card-graphic">
+                  <img {...imgProps(item.bodyImage)} alt={item.bodyImageAlt || ""} loading="lazy" decoding="async" />
+                </figure>
+              ) : null}
               <button
                 type="button"
                 className="v2-feature-toggle amenity-toggle"

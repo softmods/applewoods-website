@@ -705,6 +705,17 @@ h1 {
   animation: amenity-reveal 260ms ease;
 }
 
+.amenity-card-graphic {
+  margin: 18px 0 6px;
+}
+
+.amenity-card-graphic img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
 .amenity-card-more p {
   margin: 0;
   color: var(--taupe);
