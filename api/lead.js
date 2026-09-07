@@ -8,6 +8,9 @@ const MAX_LENGTHS = {
   email: 254,
   notes: 2_000,
 };
+// Where the lead came from (src/lead-source.js). Optional, informational only.
+const SOURCE_FIELDS = ["utmSource", "utmMedium", "utmCampaign", "utmContent", "utmTerm", "referrer", "landingPage"];
+const SOURCE_MAX_LENGTH = 200;
 const ALLOWED_VALUES = {
   lotInterest: new Set(["not-sure", "standard", "premier", "corner"]),
   budget: new Set(["not-sure", "85-95", "95-plus", "depends"]),
@@ -28,6 +31,7 @@ const STRING_FIELDS = [
   "lang",
   "companyWebsite",
   "turnstileToken",
+  ...SOURCE_FIELDS,
 ];
 
 const clean = (value) => (typeof value === "string" ? value.trim() : "");
@@ -88,6 +92,9 @@ function validateLead(body) {
     lang: clean(body.lang) || "en",
     receivedAt: new Date().toISOString(),
   };
+  for (const field of SOURCE_FIELDS) {
+    lead[field] = clean(body[field]).slice(0, SOURCE_MAX_LENGTH);
+  }
 
   if (!lead.phone && !lead.email) return { error: "A phone or email is required." };
   if (lead.phone) {
@@ -157,6 +164,14 @@ async function verifyTurnstile(token, request) {
 }
 
 // Plain-text summary of the lead for the team notification email.
+// One line a salesperson can read: "facebook / social / sept-launch" or
+// "direct", plus the landing page language.
+function describeSource(lead) {
+  const campaign = [lead.utmSource, lead.utmMedium, lead.utmCampaign].filter(Boolean).join(" / ");
+  const origin = campaign || (lead.referrer ? `referral: ${lead.referrer}` : "direct");
+  return lead.utmContent || lead.utmTerm ? `${origin} (${[lead.utmContent, lead.utmTerm].filter(Boolean).join(", ")})` : origin;
+}
+
 function leadSummary(lead) {
   return [
     `Name: ${lead.fullName || "—"}`,
@@ -167,6 +182,9 @@ function leadSummary(lead) {
     `Budget: ${lead.budget || "—"}`,
     `Timeline: ${lead.timeline || "—"}`,
     `Interest: ${lead.interestType || "—"}`,
+    `Language: ${lead.lang}`,
+    `Source: ${describeSource(lead)}`,
+    `Landing page: ${lead.landingPage || "—"}`,
     "",
     "Notes:",
     lead.notes || "—",
@@ -256,6 +274,9 @@ async function notifySlack(lead) {
     detail("Budget", lead.budget),
     detail("Timeline", lead.timeline),
     detail("Interest", lead.interestType),
+    detail("Language", lead.lang === "es" ? "Español" : "English"),
+    detail("Source", describeSource(lead)),
+    detail("Landing page", lead.landingPage),
     lead.notes ? detail("Notes", lead.notes) : null,
   ].filter(Boolean);
 
@@ -352,6 +373,7 @@ export default async function handler(request, response) {
 
 export const __testables = {
   assertResendResult,
+  describeSource,
   parseRecipientEmails,
   serializedBodyBytes,
   validateFieldTypes,

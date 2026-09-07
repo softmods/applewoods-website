@@ -2,9 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ListIcon, XIcon } from "@phosphor-icons/react";
 import { useContent } from "../content";
+import { useMounted } from "../useMounted";
 
 export default function MobileMenu() {
   const c = useContent();
+  const mounted = useMounted();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef(null);
   const closeRef = useRef(null);
@@ -45,7 +47,7 @@ export default function MobileMenu() {
       >
         <ListIcon size={20} weight="regular" aria-hidden="true" />
       </button>
-      {createPortal(
+      {mounted ? createPortal(
         <div
           className={open ? "v2-mobile-panel is-open" : "v2-mobile-panel"}
           role="dialog"
@@ -86,7 +88,7 @@ export default function MobileMenu() {
           </nav>
         </div>,
         document.body
-      )}
+      ) : null}
     </>
   );
 }

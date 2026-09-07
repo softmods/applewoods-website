@@ -70,6 +70,28 @@ test("validates field lengths and enum values", () => {
   assert.equal(__testables.validateLead({ ...validBody, budget: "anything" }).error, "budget is invalid.");
 });
 
+test("carries lead source fields through validation and describes them", () => {
+  const { lead } = __testables.validateLead({
+    ...validBody,
+    utmSource: "facebook",
+    utmMedium: "social",
+    utmCampaign: "sept-launch",
+    referrer: "l.facebook.com",
+    landingPage: "/es",
+    utmTerm: "x".repeat(500),
+  });
+  assert.equal(lead.utmSource, "facebook");
+  assert.equal(lead.landingPage, "/es");
+  assert.equal(lead.utmTerm.length, 200);
+  assert.equal(__testables.describeSource(lead), "facebook / social / sept-launch (" + "x".repeat(200) + ")");
+  assert.equal(__testables.describeSource(__testables.validateLead(validBody).lead), "direct");
+  assert.equal(
+    __testables.describeSource(__testables.validateLead({ ...validBody, referrer: "google.com" }).lead),
+    "referral: google.com"
+  );
+  assert.equal(__testables.validateFieldTypes({ ...validBody, utmSource: 5 }).error, "utmSource must be a string.");
+});
+
 test("rejects non-string fields and invalid phone values", () => {
   assert.equal(__testables.validateLead({ ...validBody, phone: ["9565550100"] }).error, "phone must be a string.");
   assert.equal(__testables.validateLead({ ...validBody, phone: "call-me" }).error, "Phone is invalid.");
