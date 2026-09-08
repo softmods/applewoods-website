@@ -107,12 +107,12 @@
     "width": 648,
     "height": 519
   },
-  "/assets/locationsaw.png": {
-    "src": "/assets/opt/locationsaw-1263.webp",
-    "srcSet": "/assets/opt/locationsaw-712.webp 712w, /assets/opt/locationsaw-1263.webp 1263w",
+  "/assets/location-map-brownsville.png": {
+    "src": "/assets/opt/location-map-brownsville-1276.webp",
+    "srcSet": "/assets/opt/location-map-brownsville-712.webp 712w, /assets/opt/location-map-brownsville-1276.webp 1276w",
     "sizes": "(max-width: 760px) 356px, 638px",
-    "width": 1263,
-    "height": 1246
+    "width": 1276,
+    "height": 1264
   },
   "/assets/value-stack-actual-plan.png": {
     "src": "/assets/opt/value-stack-actual-plan-1200.webp",

@@ -443,7 +443,7 @@ export const smcopyContent = {
           en: "A gated, smart, amenity-rich community planned to this level, at these prices, does not exist anywhere else in the area. Phase 1 is the first and best opportunity to get in.",
           es: "Una comunidad cerrada, inteligente y llena de amenidades, planificada a este nivel y a estos precios, no existe en ningún otro lugar de la zona. La Fase 1 es la primera y mejor oportunidad para entrar.",
         },
-        image: "/assets/locationsaw.png",
+        image: "/assets/location-map-brownsville.png",
       },
     ],
   },

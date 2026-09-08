@@ -914,7 +914,7 @@ function Location() {
         <Paras text={location.body} />
       </div>
       <div className="location-panel">
-        <img {...imgProps("/assets/locationsaw.png")} alt={location.imageAlt} loading="lazy" decoding="async" />
+        <img {...imgProps("/assets/location-map-brownsville.png")} alt={location.imageAlt} loading="lazy" decoding="async" />
       </div>
     </section>
   );
