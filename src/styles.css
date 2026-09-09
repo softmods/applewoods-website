@@ -996,7 +996,21 @@ h1 {
   object-fit: cover;
 }
 
-/* Map card: the whole panel opens the lightbox; the pins toggle floats top-right. */
+/* Map card: the whole panel opens the lightbox. The pins toggle and the
+   "Tap to explore" label stack bottom-left at one shared width, wide enough
+   for the longest label in either language ("Toca para explorar el mapa"). */
+.location-panel .lot-doc-hint,
+.location-panel .map-pins-toggle {
+  width: 232px;
+  max-width: calc(100% - 32px);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.location-panel .map-pins-toggle {
+  justify-content: space-between;
+}
+
 .location-panel .location-doc {
   height: 100%;
   border: 0;
