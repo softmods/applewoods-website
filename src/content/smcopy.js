@@ -502,14 +502,15 @@ export const smcopyContent = {
       },
       {
         // Client doc 2026-09-07 (Alfonso, WhatsApp): new heading + body, verbatim.
-        // bodyImage: Angel's graphic (last version, 2026-08-26) goes here once the
-        // file arrives; it renders inside "Read more" after the text.
+        // bodyImage: Angel's Youth Teams graphic (2026-09-09). On two columns it
+        // fills the space under the neighbouring (Pool) card while this card is
+        // expanded; on one column it renders inside "Read more" after the text.
         term: {
           en: "Outdoor Spaces: Active Living, Teams & Traditions",
           es: "Espacios al Aire Libre: Vida Activa, Equipos y Tradiciones",
         },
         image: "/assets/life-outdoor-spaces.jpg",
-        bodyImage: "",
+        bodyImage: "/assets/life-outdoor-youth-teams.png",
         bodyImageAlt: {
           en: "Apple Woods outdoor spaces and youth teams graphic",
           es: "Gráfico de espacios al aire libre y equipos juveniles de Apple Woods",

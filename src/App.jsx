@@ -685,9 +685,13 @@ function V2StickyAmenities() {
 // of the card. `item.image` is optional — until a render is dropped in, the
 // figure shows a labeled placeholder so the layout stays honest about where
 // imagery will land.
-function AmenityCard({ item, moreLabel, lessLabel }) {
-  const [open, setOpen] = useState(false);
+function AmenityCard({ item, moreLabel, lessLabel, onOpenChange }) {
+  const [open, setOpenState] = useState(false);
   const cardRef = useRef(null);
+  const setOpen = (next) => {
+    setOpenState(next);
+    onOpenChange?.(next);
+  };
 
   const collapse = () => {
     setOpen(false);
@@ -802,6 +806,43 @@ function LotBody({ text, moreLabel, lessLabel }) {
 function LifeInside() {
   const c = useContent();
   const { lifeInside } = c;
+  // Which cards with a companion graphic are expanded, by index. On the
+  // two-column grid the graphic renders in the left neighbour's cell (it fills
+  // the gap under that card while this one is open); on one column the card
+  // shows it inside its own "Read more" instead (CSS picks which is visible).
+  const [openWithGraphic, setOpenWithGraphic] = useState({});
+  const items = lifeInside.items;
+  const cells = [];
+  for (let i = 0; i < items.length; i += 1) {
+    const item = items[i];
+    const next = items[i + 1];
+    const companionOpen = next?.bodyImage && i % 2 === 0 && openWithGraphic[i + 1];
+    const card = (
+      <AmenityCard
+        key={item.term}
+        item={item}
+        moreLabel={lifeInside.readMore}
+        lessLabel={lifeInside.readLess}
+        onOpenChange={
+          item.bodyImage ? (open) => setOpenWithGraphic((s) => ({ ...s, [i]: open })) : undefined
+        }
+      />
+    );
+    cells.push(
+      next?.bodyImage && i % 2 === 0 ? (
+        <div className="amenity-cell" key={"cell-" + item.term}>
+          {card}
+          {companionOpen ? (
+            <figure className="amenity-companion">
+              <img {...imgProps(next.bodyImage)} alt={next.bodyImageAlt || ""} loading="lazy" decoding="async" />
+            </figure>
+          ) : null}
+        </div>
+      ) : (
+        card
+      )
+    );
+  }
   return (
     <section className="life-inside" id="life-inside">
       <div className="life-intro">
@@ -809,16 +850,7 @@ function LifeInside() {
         <h2>{lifeInside.heading}</h2>
         <Paras text={lifeInside.body} />
       </div>
-      <div className="amenity-grid">
-        {lifeInside.items.map((item) => (
-          <AmenityCard
-            key={item.term}
-            item={item}
-            moreLabel={lifeInside.readMore}
-            lessLabel={lifeInside.readLess}
-          />
-        ))}
-      </div>
+      <div className="amenity-grid">{cells}</div>
     </section>
   );
 }

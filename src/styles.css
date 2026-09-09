@@ -709,6 +709,29 @@ h1 {
   margin: 18px 0 6px;
 }
 
+/* Two columns: the graphic sits under the neighbouring card, not in the body. */
+.amenity-cell {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+  min-width: 0;
+}
+
+.amenity-companion {
+  margin: 0;
+}
+
+.amenity-companion img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.amenity-card-graphic {
+  display: none;
+}
+
 .amenity-card-graphic img {
   display: block;
   width: 100%;
@@ -2906,6 +2929,14 @@ textarea.input {
   .amenity-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 44px;
+  }
+
+  .amenity-companion {
+    display: none;
+  }
+
+  .amenity-card-graphic {
+    display: block;
   }
 
   .section-heading h2,

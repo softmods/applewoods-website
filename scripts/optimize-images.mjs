@@ -33,6 +33,7 @@ const IMAGES = [
   ["/assets/lot-corner.jpg", 298, 324],
   ["/assets/location-map-brownsville.png", 356, 638],
   ["/assets/location-map-brownsville-flat.png", 356, 638],
+  ["/assets/life-outdoor-youth-teams.png", 360, 640],
   ["/assets/value-stack-actual-plan.png", 358, 600],
   ["/assets/entrance-fountain-night.jpg", 390, 1440],
 ];
