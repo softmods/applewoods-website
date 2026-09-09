@@ -658,6 +658,10 @@ export const smcopyContent = {
     },
     imageAlt: { en: "Apple Woods location context", es: "Contexto de ubicación de Apple Woods" },
     mapHint: { en: "Tap to explore the map", es: "Toca para explorar el mapa" },
+    // Toggle between the map with 3D point-of-interest pins and the flat one.
+    pinsLabel: { en: "Points of interest", es: "Puntos de interés" },
+    pinsOn: { en: "Points of interest shown", es: "Puntos de interés visibles" },
+    pinsOff: { en: "Points of interest hidden", es: "Puntos de interés ocultos" },
     mapOpenLabel: { en: "Open the Brownsville location map", es: "Abrir el mapa de ubicación de Brownsville" },
   },
   contact: {

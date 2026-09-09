@@ -4,7 +4,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { XIcon } from "@phosphor-icons/react";
 import "./Lightbox.css";
 
-export default function Lightbox({ open, onClose, label, children, plain }) {
+export default function Lightbox({ open, onClose, label, children, plain, toolbar }) {
   const closeRef = useRef(null);
 
   useEffect(() => {
@@ -36,6 +36,7 @@ export default function Lightbox({ open, onClose, label, children, plain }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
+      {toolbar ? <div className="lightbox-toolbar">{toolbar}</div> : null}
       <button ref={closeRef} type="button" className="lightbox-close" onClick={onClose} aria-label="Close">
         <XIcon size={22} weight="bold" aria-hidden="true" />
       </button>

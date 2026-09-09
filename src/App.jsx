@@ -924,10 +924,41 @@ function PhaseOne() {
   );
 }
 
+// Switch between the map with 3D point-of-interest pins and the flat version.
+// Same control on the card and inside the lightbox, next to the close button.
+function MapPinsToggle({ on, onChange, labels, className }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={on ? labels.pinsOn : labels.pinsOff}
+      className={"map-pins-toggle" + (on ? " is-on" : "") + (className ? " " + className : "")}
+      onClick={(e) => {
+        e.stopPropagation();
+        onChange(!on);
+      }}
+    >
+      <span className="map-pins-toggle-label">{labels.pinsLabel}</span>
+      <span className="map-pins-toggle-track" aria-hidden="true">
+        <span className="map-pins-toggle-knob" />
+      </span>
+    </button>
+  );
+}
+
+const LOCATION_MAPS = {
+  pins: { still: "/assets/location-map-brownsville.png", full: "/assets/location-map-brownsville@2x.webp" },
+  flat: { still: "/assets/location-map-brownsville-flat.png", full: "/assets/location-map-brownsville-flat@2x.webp" },
+};
+
 function Location() {
   const c = useContent();
   const { location } = c;
   const [mapOpen, setMapOpen] = useState(false);
+  const [pins, setPins] = useState(true);
+  const map = pins ? LOCATION_MAPS.pins : LOCATION_MAPS.flat;
+  const toggle = <MapPinsToggle on={pins} onChange={setPins} labels={location} />;
   // Same tap-to-open card as the Phase 1 lot map: the legend on the map is too
   // small to read at panel size, so the lightbox shows the full-size file.
   return (
@@ -937,17 +968,20 @@ function Location() {
         <h2>{location.heading}</h2>
         <Paras text={location.body} />
       </div>
-      <button
-        type="button"
-        className="location-panel lot-doc"
-        onClick={() => setMapOpen(true)}
-        aria-label={location.mapOpenLabel}
-      >
-        <img {...imgProps("/assets/location-map-brownsville.png")} alt={location.imageAlt} loading="lazy" decoding="async" />
-        <span className="lot-doc-hint">{location.mapHint}</span>
-      </button>
-      <Lightbox open={mapOpen} onClose={() => setMapOpen(false)} label={location.imageAlt}>
-        <img src="/assets/location-map-brownsville@2x.webp" alt={location.imageAlt} loading="lazy" decoding="async" />
+      <div className="location-panel">
+        <button
+          type="button"
+          className="lot-doc location-doc"
+          onClick={() => setMapOpen(true)}
+          aria-label={location.mapOpenLabel}
+        >
+          <img {...imgProps(map.still)} alt={location.imageAlt} loading="lazy" decoding="async" />
+          <span className="lot-doc-hint">{location.mapHint}</span>
+        </button>
+        {toggle}
+      </div>
+      <Lightbox open={mapOpen} onClose={() => setMapOpen(false)} label={location.imageAlt} toolbar={toggle}>
+        <img src={map.full} alt={location.imageAlt} loading="lazy" decoding="async" />
       </Lightbox>
     </section>
   );

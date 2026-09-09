@@ -7,6 +7,17 @@
   backdrop-filter: blur(2px);
 }
 
+/* Extra controls sit left of the close button (e.g. the map pins toggle). */
+.lightbox-toolbar {
+  position: absolute;
+  top: 16px;
+  right: 76px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  height: 44px;
+}
+
 .lightbox-close {
   position: absolute;
   top: 16px;
