@@ -657,7 +657,7 @@ export const smcopyContent = {
       es: "Apple Woods ofrece a los residentes acceso a elementos esenciales diarios, carreteras clave, Rancho Viejo y el corredor de crecimiento portuario desde una comunidad diseñada para sentirse protegida, moderna y diferenciada.",
     },
     imageAlt: { en: "Apple Woods location context", es: "Contexto de ubicación de Apple Woods" },
-    mapHint: { en: "Tap to explore the map", es: "Toca para explorar el mapa" },
+    mapHint: { en: "Tap to explore the map", es: "Haz click para expandir el mapa" },
     // Toggle between the map with 3D point-of-interest pins and the flat one.
     pinsLabel: { en: "Points of interest", es: "Puntos de interés" },
     pinsOn: { en: "Points of interest shown", es: "Puntos de interés visibles" },
