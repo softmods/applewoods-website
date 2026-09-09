@@ -505,8 +505,8 @@ export const smcopyContent = {
         // bodyImage: Angel's graphic (last version, 2026-08-26) goes here once the
         // file arrives; it renders inside "Read more" after the text.
         term: {
-          en: "Outdoor Spaces — Active Living, Teams & Traditions",
-          es: "Espacios al Aire Libre — Vida Activa, Equipos y Tradiciones",
+          en: "Outdoor Spaces: Active Living, Teams & Traditions",
+          es: "Espacios al Aire Libre: Vida Activa, Equipos y Tradiciones",
         },
         image: "/assets/life-outdoor-spaces.jpg",
         bodyImage: "",
