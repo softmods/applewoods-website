@@ -415,6 +415,31 @@ function Paras({ text }) {
 // Grid-style card whose body is collapsed behind a Read more toggle
 // (Ecology — too much copy for a regular card). Used twice: centered on its
 // own row on desktop/tablet, and as a rail card inside the mobile scroller.
+// Feature-card media: a still, or a silent looping clip when the item has a
+// `video`. Muted + playsInline is what lets it autoplay on iOS; the poster
+// covers it until it loads. Decorative, so hidden from assistive tech.
+function FeatureMedia({ item }) {
+  return (
+    <div className="v2-feature-image">
+      {item.video ? (
+        <video
+          src={item.video}
+          poster={item.poster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
+        />
+      ) : (
+        <img {...imgProps(item.image)} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+      )}
+    </div>
+  );
+}
+
 function ExpandableFeatureCard({ item, moreLabel, lessLabel, className, collapseOffscreen }) {
   const [expanded, setExpanded] = useState(false);
   const cardRef = useRef(null);
@@ -448,9 +473,7 @@ function ExpandableFeatureCard({ item, moreLabel, lessLabel, className, collapse
 
   return (
     <article className={className} ref={cardRef}>
-      <div className="v2-feature-image">
-        <img {...imgProps(item.image)} alt="" aria-hidden="true" loading="lazy" decoding="async" />
-      </div>
+      <FeatureMedia item={item} />
       <div className="v2-feature-copy">
         <h3>{item.title}</h3>
         <div className={expanded ? "v2-feature-more is-open" : "v2-feature-more"}>
@@ -526,9 +549,7 @@ function V2Difference() {
         <div className="v2-feature-row">
           {cards.map((item) => (
             <article key={item.title}>
-              <div className="v2-feature-image">
-                <img {...imgProps(item.image)} alt="" aria-hidden="true" loading="lazy" decoding="async" />
-              </div>
+              <FeatureMedia item={item} />
               <div className="v2-feature-copy">
                 <h3>{item.title}</h3>
                 <p>{item.body}</p>

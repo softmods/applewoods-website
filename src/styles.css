@@ -2192,6 +2192,13 @@ textarea.input {
   background: #f0e6c7;
 }
 
+.v2-feature-image video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .v2-feature-image img {
   width: 100%;
   height: 100%;

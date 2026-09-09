@@ -356,6 +356,10 @@ export const smcopyContent = {
           es: "Iluminación inteligente, sistemas de acceso y herramientas de comunicación para residentes.",
         },
         image: "/assets/technology-built-in-sign.jpg",
+        // Client video (2026-09-09): street display sign. Silent loop, poster is
+        // a frame from the same clip. Remove `video` to fall back to the still.
+        video: "/assets/technology-built-in-sign.mp4",
+        poster: "/assets/technology-built-in-sign-poster.jpg",
       },
       {
         title: { en: "Luxury built in", es: "Lujo integrado" },
