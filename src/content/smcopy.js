@@ -653,6 +653,8 @@ export const smcopyContent = {
       es: "Apple Woods ofrece a los residentes acceso a elementos esenciales diarios, carreteras clave, Rancho Viejo y el corredor de crecimiento portuario desde una comunidad diseñada para sentirse protegida, moderna y diferenciada.",
     },
     imageAlt: { en: "Apple Woods location context", es: "Contexto de ubicación de Apple Woods" },
+    mapHint: { en: "Tap to explore the map", es: "Toca para explorar el mapa" },
+    mapOpenLabel: { en: "Open the Brownsville location map", es: "Abrir el mapa de ubicación de Brownsville" },
   },
   contact: {
     heading: {

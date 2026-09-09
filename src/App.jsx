@@ -906,6 +906,9 @@ function PhaseOne() {
 function Location() {
   const c = useContent();
   const { location } = c;
+  const [mapOpen, setMapOpen] = useState(false);
+  // Same tap-to-open card as the Phase 1 lot map: the legend on the map is too
+  // small to read at panel size, so the lightbox shows the full-size file.
   return (
     <section className="location" id="location">
       <div>
@@ -913,9 +916,18 @@ function Location() {
         <h2>{location.heading}</h2>
         <Paras text={location.body} />
       </div>
-      <div className="location-panel">
+      <button
+        type="button"
+        className="location-panel lot-doc"
+        onClick={() => setMapOpen(true)}
+        aria-label={location.mapOpenLabel}
+      >
         <img {...imgProps("/assets/location-map-brownsville.png")} alt={location.imageAlt} loading="lazy" decoding="async" />
-      </div>
+        <span className="lot-doc-hint">{location.mapHint}</span>
+      </button>
+      <Lightbox open={mapOpen} onClose={() => setMapOpen(false)} label={location.imageAlt}>
+        <img src="/assets/location-map-brownsville@2x.webp" alt={location.imageAlt} loading="lazy" decoding="async" />
+      </Lightbox>
     </section>
   );
 }
