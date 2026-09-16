@@ -201,6 +201,35 @@ p {
   margin-top: 0;
 }
 
+/* Client request (2026-09-16): running text is justified. Headings, labels,
+   buttons, nav and form controls keep their own alignment. Short one-line
+   taglines under headings are excluded below because justify only changes
+   lines that wrap, and on a two-line italic tagline it just spreads the words. */
+p,
+.faq details li,
+.value-stack-grid li {
+  text-align: justify;
+}
+
+.v2-hero-copy > p,
+.v2-difference-heading p,
+.v2-amenities-title p,
+.direct-contact p,
+.footer-message p {
+  text-align: left;
+}
+
+/* Narrow columns get rivers without hyphenation; the html lang attribute
+   (en on /, es on /es) picks the dictionary. */
+@media (max-width: 760px) {
+  p,
+  .faq details li,
+  .value-stack-grid li {
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+}
+
 h1,
 h2,
 h3 {
