@@ -98,21 +98,11 @@ test("rejects non-string fields and invalid phone values", () => {
   assert.equal(__testables.validateLead({ ...validBody, phone: "+52 (956) 555-0100" }).lead.phone, "+52 (956) 555-0100");
 });
 
-test("requires a complete Resend batch result", () => {
-  assert.doesNotThrow(() =>
-    __testables.assertResendResult(
-      { data: { data: [{ id: "one" }, { id: "two" }, { id: "three" }] }, error: null },
-      3
-    )
-  );
-  assert.throws(
-    () => __testables.assertResendResult({ data: null, error: { message: "invalid recipient" } }, 3),
-    /Resend rejected the email batch/
-  );
-  assert.throws(
-    () => __testables.assertResendResult({ data: { data: [{ id: "one" }, { id: "two" }] }, error: null }, 3),
-    /Resend rejected the email batch/
-  );
+test("requires a successful individual Resend result", () => {
+  assert.doesNotThrow(() => __testables.assertResendResult({ data: { id: "one" }, error: null }));
+  for (const result of [{ data: null, error: { message: "rejected" } }, { data: {} }]) {
+    assert.throws(() => __testables.assertResendResult(result), /Resend rejected the email/);
+  }
 });
 
 test("honeypot submissions return success without calling external services", async () => {
@@ -236,5 +226,81 @@ test("Turnstile verification sends the token and visitor IP to Siteverify", asyn
     globalThis.fetch = originalFetch;
     if (previousSecret === undefined) delete process.env.TURNSTILE_SECRET_KEY;
     else process.env.TURNSTILE_SECRET_KEY = previousSecret;
+  }
+});
+
+test("contact card preserves Unicode, escapes fields, and omits missing details", () => {
+  const card = __testables.contactCard({ fullName: 'José; García, Jr.\\Test\nORG:Injected' + 'é'.repeat(90), email: 'jose@example.com' });
+  for (const line of card.split('\r\n')) assert.ok(Buffer.byteLength(line) <= 75);
+  const unfolded = card.replace(/\r\n /g, '');
+  assert.ok(unfolded.includes('José\\; García\\, Jr.\\\\Test\\nORG:Injected'));
+  assert.equal(unfolded.split('\r\n').filter(line => line.startsWith('ORG:')).length, 1);
+  assert.ok(!unfolded.includes('TEL;'));
+  assert.ok(!card.includes('\ufffd'));
+  assert.ok(__testables.contactCard({ phone: '+52 8112345678' }).includes('FN:+52 8112345678\r\n'));
+});
+
+test("form submission sends private contact attachments to the team only", async () => {
+  const keys = ['VERCEL_ENV', 'TURNSTILE_SECRET_KEY', 'RESEND_API_KEY', 'FROM_EMAIL', 'CLIENT_EMAILS', 'CLIENT_EMAIL', 'SLACK_WEBHOOK_URL', 'SEND_LEAD_AUTOREPLY'];
+  const previous = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  const originalFetch = globalThis.fetch;
+  for (const key of keys) delete process.env[key];
+  Object.assign(process.env, { RESEND_API_KEY: 're_test', FROM_EMAIL: 'site@example.com', CLIENT_EMAILS: 'one@example.com,two@example.com,three@example.com', SEND_LEAD_AUTOREPLY: 'true' });
+  const sent = [];
+  globalThis.fetch = async (url, options) => {
+    assert.equal(String(url), 'https://api.resend.com/emails');
+    sent.push(JSON.parse(options.body));
+    return new Response(JSON.stringify({ id: `email-${sent.length}` }), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+  try {
+    const response = mockResponse();
+    await handler({ method: 'POST', headers: { 'content-type': 'application/json' }, body: validBody }, response);
+    assert.equal(response.statusCode, 200);
+    assert.equal(sent.length, 4);
+    for (const [index, message] of sent.slice(0, 3).entries()) {
+      assert.deepEqual([message.to].flat(), [['one@example.com', 'two@example.com', 'three@example.com'][index]]);
+      assert.equal(message.reply_to, validBody.email);
+      assert.equal(message.attachments.length, 1);
+      const attachment = message.attachments[0];
+      assert.equal(attachment.filename, 'applewoods-contact.vcf');
+      const card = Buffer.from(attachment.content, 'base64').toString('utf8');
+      assert.ok(card.includes('FN:Test Lead\r\n'));
+      assert.ok(card.includes('TEL;TYPE=CELL:9565550100\r\n'));
+      assert.ok(card.includes('EMAIL;TYPE=INTERNET:lead@example.com\r\n'));
+      assert.ok(card.includes('ORG:Interested in Apple Woods\r\n'));
+    }
+    assert.equal(sent[3].attachments, undefined);
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (previous[key] === undefined) delete process.env[key];
+      else process.env[key] = previous[key];
+    }
+  }
+});
+
+test("failed recipient does not prevent later sends, and total failure returns 502", async () => {
+  const keys = ['VERCEL_ENV', 'TURNSTILE_SECRET_KEY', 'RESEND_API_KEY', 'FROM_EMAIL', 'CLIENT_EMAILS', 'SLACK_WEBHOOK_URL', 'SEND_LEAD_AUTOREPLY'];
+  const previous = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  const originalFetch = globalThis.fetch;
+  for (const key of keys) delete process.env[key];
+  Object.assign(process.env, { VERCEL_ENV: 'production', TURNSTILE_SECRET_KEY: 'test', RESEND_API_KEY: 're_test', FROM_EMAIL: 'site@example.com', CLIENT_EMAILS: 'one@example.com,two@example.com,three@example.com' });
+  let attempts = 0;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('siteverify')) return new Response(JSON.stringify({ success: true }));
+    attempts++;
+    return new Response(JSON.stringify({ name: 'validation_error', message: 'Rejected' }), { status: 422 });
+  };
+  try {
+    const response = mockResponse();
+    await handler({ method: 'POST', headers: { 'content-type': 'application/json' }, body: { ...validBody, turnstileToken: 'test' } }, response);
+    assert.equal(attempts, 3);
+    assert.equal(response.statusCode, 502);
+  } finally {
+    globalThis.fetch = originalFetch;
+    for (const key of keys) {
+      if (previous[key] === undefined) delete process.env[key];
+      else process.env[key] = previous[key];
+    }
   }
 });

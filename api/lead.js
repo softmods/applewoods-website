@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { setTimeout as delay } from "node:timers/promises";
 
 const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 const MAX_BODY_BYTES = 16_384;
@@ -116,10 +117,45 @@ function validateLead(body) {
   return { lead };
 }
 
-function assertResendResult(result, expectedEmails) {
-  if (result?.error || !Array.isArray(result?.data?.data) || result.data.data.length !== expectedEmails) {
-    throw new Error("Resend rejected the email batch");
+function assertResendResult(result) {
+  if (result?.error || !result?.data?.id) {
+    throw new Error("Resend rejected the email");
   }
+}
+
+function contactCard(lead) {
+  const escape = (value) => String(value || "")
+    .replace(/\\/g, "\\\\")
+    .replace(/\r\n|\r|\n/g, "\\n")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,");
+  // Preserve the single full-name field without guessing surname boundaries.
+  const name = escape(lead.fullName || lead.email || lead.phone);
+  const lines = [
+    "BEGIN:VCARD",
+    "VERSION:3.0",
+    `FN:${name}`,
+    `N:;${name};;;`,
+    "ORG:Interested in Apple Woods",
+    ...(lead.phone ? [`TEL;TYPE=CELL:${escape(lead.phone)}`] : []),
+    ...(lead.email ? [`EMAIL;TYPE=INTERNET:${escape(lead.email)}`] : []),
+    "END:VCARD",
+  ];
+  // Fold at 75 UTF-8 octets without splitting a Unicode character.
+  return lines.map((line) => {
+    let folded = "";
+    let bytes = 0;
+    for (const character of line) {
+      const size = Buffer.byteLength(character, "utf8");
+      if (bytes + size > 75) {
+        folded += "\r\n ";
+        bytes = 1;
+      }
+      folded += character;
+      bytes += size;
+    }
+    return folded;
+  }).join("\r\n") + "\r\n";
 }
 
 function visitorIp(request) {
@@ -232,7 +268,12 @@ async function sendResendEmails(lead) {
     to: recipient,
     ...(lead.email ? { replyTo: lead.email } : {}),
     subject: `New Apple Woods lead${lead.fullName ? `: ${lead.fullName}` : ""}`,
-    text: leadSummary(lead),
+    text: `${leadSummary(lead)}\n\nSave contact: open the attached applewoods-contact.vcf file on your phone.`,
+    attachments: [{
+      filename: "applewoods-contact.vcf",
+      content: Buffer.from(contactCard(lead), "utf8").toString("base64"),
+      contentType: "text/vcard",
+    }],
   }));
 
   // Auto-replies are intentionally opt-in. Keep this false until the client
@@ -247,8 +288,18 @@ async function sendResendEmails(lead) {
     });
   }
 
-  const result = await resend.batch.send(messages);
-  assertResendResult(result, messages.length);
+  // Batch sends do not support attachments. Space individual requests to
+  // stay below Resend's default two-requests-per-second account limit.
+  const failures = [];
+  for (const [index, message] of messages.entries()) {
+    if (index > 0) await delay(600);
+    try {
+      assertResendResult(await resend.emails.send(message));
+    } catch (error) {
+      failures.push(error);
+    }
+  }
+  if (failures.length) throw new AggregateError(failures, "Lead email delivery incomplete");
   return {
     status: "sent",
     recipients: clientEmails.length,
@@ -373,6 +424,7 @@ export default async function handler(request, response) {
 
 export const __testables = {
   assertResendResult,
+  contactCard,
   describeSource,
   parseRecipientEmails,
   serializedBodyBytes,
