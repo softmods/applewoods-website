@@ -62,6 +62,11 @@ for (const lang of LANGS) {
   html = replaceMeta(html, "name", "twitter:title", seo.title);
   html = replaceMeta(html, "name", "twitter:description", seo.description);
   html = html.replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${urlForLang(lang)}" />`);
+  // Preview deploys (staging and SEO aliases) stay out of search results so
+  // they never compete with www. Local and production builds are unaffected.
+  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production") {
+    html = html.replace("</head>", `    <meta name="robots" content="noindex, nofollow" />\n  </head>`);
+  }
   const ld = jsonLd(lang);
   const faq = ld["@graph"].find((n) => n["@type"] === "FAQPage");
   if (!faq || faq.mainEntity.length < 10) throw new Error(`JSON-LD for "${lang}" has too few FAQ entries`);

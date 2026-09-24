@@ -8,6 +8,7 @@ import MobileMenu from "./components/MobileMenu";
 import { ContentProvider, useContent, useLang } from "./content";
 import { readLeadSource } from "./lead-source";
 import { imgProps } from "./img.js";
+import { useAlt } from "./seo-alt.js";
 import "./styles.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -348,6 +349,7 @@ function emphasize(text) {
 }
 
 function V2Hero() {
+  const altFor = useAlt();
   const c = useContent();
   const { hero } = c;
   return (
@@ -375,7 +377,7 @@ function V2Hero() {
           <source media="(max-width: 760px)" srcSet="/assets/hero-mobile.jpg" />
           <img
             src="/assets/hero-desktop.jpg"
-            alt={hero.imageAlt}
+            alt={altFor("/assets/hero-desktop.jpg", hero.imageAlt)}
             width={1920}
             height={1080}
             fetchPriority="high"
@@ -582,6 +584,7 @@ function V2Difference() {
 }
 
 function V2StickyAmenities() {
+  const altFor = useAlt();
   const c = useContent();
   const { titleLines, stories } = c.amenities;
   const [ref, { index, progress }] = useStickyIndex(stories.length);
@@ -636,7 +639,7 @@ function V2StickyAmenities() {
             </div>
 
             <figure className="v2-amenity-image" ref={imageRef}>
-              <img {...imgProps(active.image)} alt={active.label} loading="lazy" decoding="async" />
+              <img {...imgProps(active.image)} alt={altFor(active.image, active.label)} loading="lazy" decoding="async" />
               <figcaption>{active.title}</figcaption>
             </figure>
 
@@ -686,6 +689,7 @@ function V2StickyAmenities() {
 // figure shows a labeled placeholder so the layout stays honest about where
 // imagery will land.
 function AmenityCard({ item, moreLabel, lessLabel, onOpenChange }) {
+  const altFor = useAlt();
   const [open, setOpenState] = useState(false);
   const cardRef = useRef(null);
   const setOpen = (next) => {
@@ -712,7 +716,7 @@ function AmenityCard({ item, moreLabel, lessLabel, onOpenChange }) {
       <h3 className="amenity-card-title">{item.term}</h3>
       <figure className="amenity-figure">
         {item.image ? (
-          <img {...imgProps(item.image)} alt={item.imageAlt || item.term} loading="lazy" />
+          <img {...imgProps(item.image)} alt={altFor(item.image, item.imageAlt || item.term)} loading="lazy" />
         ) : (
           <span className="amenity-figure-ph" aria-hidden="true">
             {item.term}
@@ -730,7 +734,7 @@ function AmenityCard({ item, moreLabel, lessLabel, onOpenChange }) {
               <Paras text={item.body} />
               {item.bodyImage ? (
                 <figure className="amenity-card-graphic">
-                  <img {...imgProps(item.bodyImage)} alt={item.bodyImageAlt || ""} loading="lazy" decoding="async" />
+                  <img {...imgProps(item.bodyImage)} alt={altFor(item.bodyImage, item.bodyImageAlt || "")} loading="lazy" decoding="async" />
                 </figure>
               ) : null}
               <button
@@ -804,6 +808,7 @@ function LotBody({ text, moreLabel, lessLabel }) {
 }
 
 function LifeInside() {
+  const altFor = useAlt();
   const c = useContent();
   const { lifeInside } = c;
   // Which cards with a companion graphic are expanded, by index. On the
@@ -834,7 +839,7 @@ function LifeInside() {
           {card}
           {companionOpen ? (
             <figure className="amenity-companion">
-              <img {...imgProps(next.bodyImage)} alt={next.bodyImageAlt || ""} loading="lazy" decoding="async" />
+              <img {...imgProps(next.bodyImage)} alt={altFor(next.bodyImage, next.bodyImageAlt || "")} loading="lazy" decoding="async" />
             </figure>
           ) : null}
         </div>
@@ -856,6 +861,7 @@ function LifeInside() {
 }
 
 function PhaseOne() {
+  const altFor = useAlt();
   const c = useContent();
   const { phaseOne } = c;
   const [mapOpen, setMapOpen] = useState(false);
@@ -894,7 +900,7 @@ function PhaseOne() {
             onClick={() => setMapOpen(true)}
             aria-label={`Open the ${phase.label} lot map`}
           >
-            <img src={`${phase.map}.png`} alt={phase.mapAlt} width={1530} height={1980} loading="lazy" decoding="async" />
+            <img src={`${phase.map}.png`} alt={altFor(phase.map, phase.mapAlt)} width={1530} height={1980} loading="lazy" decoding="async" />
             <span className="lot-doc-hint">{phaseOne.masterplanHint}</span>
           </button>
           <button
@@ -903,7 +909,7 @@ function PhaseOne() {
             onClick={() => setPriceOpen(true)}
             aria-label={`Open the ${phase.label} price sheet`}
           >
-            <img src={`${phase.priceSheet}-preview.png`} alt={phase.priceSheetAlt} width={1275} height={1650} loading="lazy" decoding="async" />
+            <img src={`${phase.priceSheet}-preview.png`} alt={altFor(phase.priceSheet, phase.priceSheetAlt)} width={1275} height={1650} loading="lazy" decoding="async" />
             <span className="lot-doc-hint">{phaseOne.priceSheetHint}</span>
           </button>
         </div>
@@ -918,7 +924,7 @@ function PhaseOne() {
                   onClick={() => setOpenLotImage(lotIndex)}
                   aria-label={`Expand the ${lot.name} image`}
                 >
-                  <img {...imgProps(lot.image)} alt={lot.imageAlt || lot.name} loading="lazy" />
+                  <img {...imgProps(lot.image)} alt={altFor(lot.image, lot.imageAlt || lot.name)} loading="lazy" />
                   <span className="lot-thumb-zoom" aria-hidden="true">
                     <ArrowsOutSimpleIcon size={15} weight="bold" />
                   </span>
@@ -933,10 +939,10 @@ function PhaseOne() {
       </div>
       <p className="phase-note">{phaseOne.phaseNote}</p>
       <Lightbox open={mapOpen} onClose={() => setMapOpen(false)} label={phase.mapAlt}>
-        <img src={`${phase.map}@2x.png`} alt={phase.mapAlt} loading="lazy" decoding="async" />
+        <img src={`${phase.map}@2x.png`} alt={altFor(phase.map, phase.mapAlt)} loading="lazy" decoding="async" />
       </Lightbox>
       <Lightbox open={priceOpen} onClose={() => setPriceOpen(false)} label={phase.priceSheetAlt}>
-        <img src={`${phase.priceSheet}@2x.png`} alt={phase.priceSheetAlt} loading="lazy" decoding="async" />
+        <img src={`${phase.priceSheet}@2x.png`} alt={altFor(phase.priceSheet, phase.priceSheetAlt)} loading="lazy" decoding="async" />
       </Lightbox>
       <Lightbox
         open={openLotImage !== null}
@@ -946,7 +952,7 @@ function PhaseOne() {
         {openLotImage !== null ? (
           <img
             src={phaseOne.lots[openLotImage].image}
-            alt={phaseOne.lots[openLotImage].imageAlt || phaseOne.lots[openLotImage].name}
+            alt={altFor(phaseOne.lots[openLotImage].image, phaseOne.lots[openLotImage].imageAlt || phaseOne.lots[openLotImage].name)}
             loading="lazy"
             decoding="async"
           />
@@ -985,6 +991,7 @@ const LOCATION_MAPS = {
 };
 
 function Location() {
+  const altFor = useAlt();
   const c = useContent();
   const { location } = c;
   const [mapOpen, setMapOpen] = useState(false);
@@ -1007,13 +1014,13 @@ function Location() {
           onClick={() => setMapOpen(true)}
           aria-label={location.mapOpenLabel}
         >
-          <img {...imgProps(map.still)} alt={location.imageAlt} loading="lazy" decoding="async" />
+          <img {...imgProps(map.still)} alt={altFor(map.still, location.imageAlt)} loading="lazy" decoding="async" />
           <span className="lot-doc-hint">{location.mapHint}</span>
         </button>
         {toggle}
       </div>
       <Lightbox open={mapOpen} onClose={() => setMapOpen(false)} label={location.imageAlt} toolbar={toggle}>
-        <img src={map.full} alt={location.imageAlt} loading="lazy" decoding="async" />
+        <img src={map.full} alt={altFor(map.still, location.imageAlt)} loading="lazy" decoding="async" />
       </Lightbox>
     </section>
   );
