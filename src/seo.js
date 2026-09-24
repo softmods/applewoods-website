@@ -3,13 +3,19 @@
 // search results and link previews.
 export const SEO = {
   en: {
-    title: "Apple Woods | Smart Living In Brownsville",
+    title: "Apple Woods | Gated Community Lots for Sale in Brownsville, TX",
     description:
-      "Apple Woods is a smart residential community in Brownsville, Texas, designed around security, comfort, beauty, technology, and attainable everyday luxury. Phase 1 lots from $85,000.",
+      "Phase 1 homesites from $85,000 in a gated smart community in Brownsville, Texas. Design your own home, share the amenities, keep dues low. Check availability.",
+    orgDescription:
+      "Gated smart community in Brownsville, Texas, with Phase 1 homesites from $85,000.",
+    slogan: "Smart Living in Brownsville",
   },
   es: {
-    title: "Apple Woods | Vida inteligente en Brownsville",
+    title: "Apple Woods | Terrenos en venta en Brownsville, TX",
     description:
-      "Apple Woods es una comunidad residencial inteligente en Brownsville, Texas, diseñada alrededor de la seguridad, la comodidad, la belleza y la tecnología. Lotes de la Fase 1 desde $85,000.",
+      "Terrenos de Fase 1 desde $85,000 en un fraccionamiento privado e inteligente en Brownsville, Texas. Diseña tu casa, comparte las amenidades. Pregunta por disponibilidad.",
+    orgDescription:
+      "Fraccionamiento privado e inteligente en Brownsville, Texas, con terrenos de Fase 1 desde $85,000.",
+    slogan: "Vida inteligente en Brownsville",
   },
 };

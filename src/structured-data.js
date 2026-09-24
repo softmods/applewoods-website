@@ -1,4 +1,5 @@
 import { SITE_URL, urlForLang } from "./lang";
+import { SEO } from "./seo";
 
 // JSON-LD for the prerendered pages, built from the same content the page
 // renders so it can never drift from what visitors read. Every value here is
@@ -76,6 +77,9 @@ export function structuredData(content, lang, { priceLabelsEn } = {}) {
         "@type": "Organization",
         "@id": orgId,
         name: "Apple Woods",
+        alternateName: ["Applewoods", "Apple Woods Brownsville"],
+        description: SEO[inLanguage].orgDescription,
+        slogan: SEO[inLanguage].slogan,
         url: `${SITE_URL}/`,
         logo: LOGO_URL,
         image: OG_IMAGE_URL,
