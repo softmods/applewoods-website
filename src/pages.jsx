@@ -3,6 +3,7 @@ import { V2Nav, Footer, Contact } from "./App";
 import Lightbox from "./components/Lightbox";
 import { useContent, useLang } from "./content";
 import { POSTS, postBySlug, CATEGORIES } from "./content/posts/index.js";
+import { FACTS, FACTS_NOTE } from "./content/facts.js";
 import LOTS from "./content/lots.js";
 import { imgProps, heroImgProps } from "./img.js";
 import { pathFor } from "./lang";
@@ -14,7 +15,7 @@ import { pathFor } from "./lang";
 const UI = {
   en: {
     blogTitle: "Apple Woods blog",
-    blogIntro: "Straight answers for people buying a lot and building a home in Brownsville, Texas.",
+    blogIntro: "Guides for buying a lot in Brownsville, and ideas for living well once you are here.",
     all: "All",
     filterLabel: "Filter posts by category",
     readPost: "Read the post",
@@ -22,7 +23,7 @@ const UI = {
     related: "Keep reading",
     breadcrumb: "Breadcrumb",
     home: "Home",
-    blog: "Blog",
+    blog: "Journal",
     lots: "Lots",
     published: "Published",
     updated: "Updated",
@@ -30,8 +31,18 @@ const UI = {
     notFoundBody: "That page does not exist. The home page and the lot list are the best places to start.",
     openMap: "Open the lot map",
     openSheet: "Open the price sheet",
-    journal: "Apple Woods journal",
-    indexTitle: "Buying a lot in Brownsville, explained",
+    journal: "Apple Woods",
+    indexTitle: "Smart Living Journal",
+    lanes: { story: "Smart Living", guide: "Guide" },
+    allLanes: "Everything",
+    factsTitle: "At Apple Woods",
+    signupEyebrow: "Smart Living Journal",
+    signupTitle: "One email a month, worth opening",
+    signupBody: "A new story from the Journal, a dated construction update with photos, and which lots are still available.",
+    signupLabel: "Email address",
+    signupButton: "Subscribe",
+    signupPreview: "Preview only: signups are not connected yet.",
+    signupFine: "Monthly. Unsubscribe anytime.",
     minRead: (n) => `${n} min read`,
     more: "Keep reading",
     ctaTitle: "Ready to pick your lot?",
@@ -41,7 +52,7 @@ const UI = {
   },
   es: {
     blogTitle: "Blog de Apple Woods",
-    blogIntro: "Respuestas claras para quien compra un terreno y quiere construir su casa en Brownsville, Texas.",
+    blogIntro: "Guías para comprar tu terreno en Brownsville e ideas para vivir mejor una vez que estés aquí.",
     all: "Todos",
     filterLabel: "Filtrar por categoría",
     readPost: "Leer el artículo",
@@ -49,7 +60,7 @@ const UI = {
     related: "Sigue leyendo",
     breadcrumb: "Ruta de navegación",
     home: "Inicio",
-    blog: "Blog",
+    blog: "Journal",
     lots: "Terrenos",
     published: "Publicado",
     updated: "Actualizado",
@@ -57,8 +68,18 @@ const UI = {
     notFoundBody: "Esa página no existe. La página principal y la lista de terrenos son el mejor lugar para empezar.",
     openMap: "Abrir el mapa de terrenos",
     openSheet: "Abrir la lista de precios",
-    journal: "Diario de Apple Woods",
-    indexTitle: "Comprar un terreno en Brownsville, paso a paso",
+    journal: "Apple Woods",
+    indexTitle: "Smart Living Journal",
+    lanes: { story: "Smart Living", guide: "Guía" },
+    allLanes: "Todo",
+    factsTitle: "En Apple Woods",
+    signupEyebrow: "Smart Living Journal",
+    signupTitle: "Un correo al mes que sí vale la pena abrir",
+    signupBody: "Una historia nueva del Journal, un avance de obra con fecha y fotos, y los terrenos que siguen disponibles.",
+    signupLabel: "Correo electrónico",
+    signupButton: "Suscribirme",
+    signupPreview: "Vista previa: las suscripciones todavía no están conectadas.",
+    signupFine: "Una vez al mes. Cancela cuando quieras.",
     minRead: (n) => `${n} min de lectura`,
     more: "Sigue leyendo",
     ctaTitle: "¿Listo para elegir tu terreno?",
@@ -300,9 +321,60 @@ function Pills({ post }) {
   const { lang } = useLang();
   return (
     <ul className="pills" aria-label={lang === "es" ? "Detalles" : "Details"}>
+      <li className={"pill-lane is-" + (post.lane || "guide")}>{UI[lang].lanes[post.lane || "guide"]}</li>
       <li>{CATEGORIES[post.category]?.[lang]}</li>
       <li>{UI[lang].minRead(readMinutes(post[lang]))}</li>
     </ul>
+  );
+}
+
+// "At Apple Woods": the post's facts from src/content/facts.js, so the body
+// never has to describe amenities itself.
+function FactBox({ keys }) {
+  const { lang } = useLang();
+  const lines = (keys || []).map((k) => FACTS[k]?.[lang]).filter(Boolean);
+  if (!lines.length) return null;
+  return (
+    <aside className="fact-box" aria-labelledby="fact-box-title">
+      <h2 id="fact-box-title">{UI[lang].factsTitle}</h2>
+      <ul>
+        {lines.map((line) => (
+          <li key={line}><Rich text={line} /></li>
+        ))}
+      </ul>
+      <p className="fact-box-note">{FACTS_NOTE[lang]}</p>
+      <a className="fact-box-link" href={pathFor("lots", lang)}>{UI[lang].viewLots} &rarr;</a>
+    </aside>
+  );
+}
+
+// Newsletter signup. No sending tool exists yet (2026-09-25), so the form is
+// presentational: it confirms nothing and tells the visitor it is a preview.
+// Wire it to a list before this ships to www.
+function JournalSignup() {
+  const { lang } = useLang();
+  const t = UI[lang];
+  const [note, setNote] = useState("");
+  return (
+    <section className="journal-signup" aria-labelledby="journal-signup-title">
+      <div>
+        <p className="journal-eyebrow">{t.signupEyebrow}</p>
+        <h2 id="journal-signup-title">{t.signupTitle}</h2>
+        <p>{t.signupBody}</p>
+      </div>
+      <form
+        className="journal-signup-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setNote(t.signupPreview);
+        }}
+      >
+        <label className="sr-only" htmlFor="journal-signup-email">{t.signupLabel}</label>
+        <input id="journal-signup-email" type="email" name="email" autoComplete="email" placeholder={t.signupLabel} required />
+        <button type="submit">{t.signupButton}</button>
+        <p className="journal-signup-fine" aria-live="polite">{note || t.signupFine}</p>
+      </form>
+    </section>
   );
 }
 
@@ -369,10 +441,12 @@ function CtaBand() {
 export function BlogIndexPage() {
   const { lang } = useLang();
   const t = UI[lang];
-  const [category, setCategory] = useState("all");
-  const used = Object.keys(CATEGORIES).filter((k) => POSTS.some((p) => p.category === k));
-  const shown = category === "all" ? POSTS : POSTS.filter((p) => p.category === category);
-  const [first, ...rest] = shown;
+  const [lane, setLane] = useState("all");
+  const lanes = ["story", "guide"].filter((k) => POSTS.some((p) => (p.lane || "guide") === k));
+  const shown = lane === "all" ? POSTS : POSTS.filter((p) => (p.lane || "guide") === lane);
+  const featured = shown.find((p) => p.featured) || shown[0];
+  const first = featured;
+  const rest = shown.filter((p) => p !== featured);
   return (
     <Shell>
       <div className="journal">
@@ -381,11 +455,11 @@ export function BlogIndexPage() {
           <h1>{t.indexTitle}</h1>
           <p>{t.blogIntro}</p>
         </header>
-        {POSTS.length >= 6 && used.length > 1 ? (
+        {lanes.length > 1 ? (
           <div className="journal-filter" role="group" aria-label={t.filterLabel}>
-            {["all", ...used].map((key) => (
-              <button key={key} type="button" aria-pressed={key === category} onClick={() => setCategory(key)}>
-                {key === "all" ? t.all : CATEGORIES[key][lang]}
+            {["all", ...lanes].map((key) => (
+              <button key={key} type="button" aria-pressed={key === lane} onClick={() => setLane(key)}>
+                {key === "all" ? t.allLanes : t.lanes[key]}
               </button>
             ))}
           </div>
@@ -399,6 +473,7 @@ export function BlogIndexPage() {
           </div>
         ) : null}
       </div>
+      <JournalSignup />
       <CtaBand />
     </Shell>
   );
@@ -429,7 +504,10 @@ export function PostPage({ slug }) {
   const post = postBySlug(lang, slug);
   if (!post) return <NotFoundPage />;
   const p = post[lang];
-  const others = POSTS.filter((o) => o.id !== post.id).slice(0, 3);
+  // Same lane first, so a story leads to stories and a guide to guides.
+  const others = POSTS.filter((o) => o.id !== post.id)
+    .sort((a, b) => Number(b.lane === post.lane) - Number(a.lane === post.lane))
+    .slice(0, 3);
   return (
     <Shell>
       <article className="article">
@@ -445,10 +523,12 @@ export function PostPage({ slug }) {
           />
           <div className="article-body">
             <Sections sections={p.sections} />
+            <FactBox keys={post.facts} />
             <Faq items={p.faq} />
           </div>
         </div>
       </article>
+      <JournalSignup />
       {others.length ? (
         <nav className="read-more" aria-labelledby="read-more-title">
           <h2 id="read-more-title">{t.more}</h2>

@@ -1,6 +1,8 @@
 export default {
   id: "b12",
   category: "building",
+  lane: "guide",
+  facts: ["lotSize", "homeSize", "price"],
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
   heroImage: "/assets/lot-classic.jpg",

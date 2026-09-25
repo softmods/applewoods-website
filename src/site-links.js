@@ -4,7 +4,7 @@ import { pathFor } from "./lang";
 
 const LABELS = {
   lots: { en: "Lots", es: "Terrenos" },
-  blog: { en: "Blog", es: "Blog" },
+  blog: { en: "Journal", es: "Journal" },
 };
 
 export const pageLinks = (lang) =>

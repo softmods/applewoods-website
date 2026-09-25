@@ -4,7 +4,14 @@ const modules = import.meta.glob("./*.js", { eager: true });
 export const POSTS = Object.entries(modules)
   .filter(([file]) => !file.endsWith("/index.js"))
   .map(([, mod]) => mod.default)
-  .sort((a, b) => b.datePublished.localeCompare(a.datePublished) || a.id.localeCompare(b.id));
+  // Newest first; on the same day, featured, then Smart Living stories, then guides.
+  .sort(
+    (a, b) =>
+      b.datePublished.localeCompare(a.datePublished) ||
+      Number(Boolean(b.featured)) - Number(Boolean(a.featured)) ||
+      Number(b.lane === "story") - Number(a.lane === "story") ||
+      a.id.localeCompare(b.id)
+  );
 
 export const postBySlug = (lang, slug) => POSTS.find((p) => p[lang].slug === slug) || null;
 

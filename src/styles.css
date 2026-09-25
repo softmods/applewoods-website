@@ -3872,6 +3872,151 @@ textarea.input {
   margin: 0;
 }
 
+.pills .pill-lane.is-story {
+  background: #302318;
+  color: #f3ede3;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- At Apple Woods fact box ---------- */
+.fact-box {
+  margin: 48px 0 8px;
+  padding: 26px 28px 24px;
+  border: 1px solid var(--a-line);
+  border-radius: 10px;
+  background: #f6f0e6;
+}
+
+.subpage .fact-box h2 {
+  margin: 0 0 14px;
+  color: var(--a-gold);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.article-body .fact-box ul {
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+
+.article-body .fact-box li {
+  margin-bottom: 6px;
+  color: var(--a-ink);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.article-body .fact-box-note {
+  margin: 0 0 14px;
+  color: var(--a-muted);
+  font-size: 14px;
+}
+
+.article-body .fact-box-link {
+  color: var(--a-gold);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ---------- Journal signup ---------- */
+.journal-signup {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: center;
+  width: min(1040px, calc(100% - 32px));
+  margin: 88px auto 0;
+  padding: 40px 44px;
+  border: 1px solid var(--a-line);
+  border-radius: 10px;
+  background: var(--a-card);
+}
+
+.journal-signup .journal-eyebrow {
+  margin: 0 0 12px;
+  color: var(--a-gold);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.subpage .journal-signup h2 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.journal-signup > div > p:last-child {
+  margin: 0;
+  color: var(--a-muted);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.journal-signup-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.journal-signup-form input {
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid rgba(88, 53, 41, 0.2);
+  border-radius: 6px;
+  background: var(--v2-paper);
+  color: var(--a-ink);
+  font: inherit;
+  font-size: 16px;
+}
+
+.journal-signup-form input:focus-visible {
+  outline: 2px solid var(--a-gold);
+  outline-offset: 1px;
+}
+
+.journal-signup-form button {
+  min-height: 48px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 6px;
+  background: #8a6c32;
+  color: #fbf7ed;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s var(--a-ease);
+}
+
+.journal-signup-form button:hover {
+  background: #6e5328;
+}
+
+.journal-signup-fine {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+  color: var(--a-muted);
+  font-size: 13px;
+}
+
 /* ---------- Keep reading ---------- */
 .read-more {
   width: min(1120px, calc(100% - 32px));
@@ -4028,6 +4173,12 @@ textarea.input {
 }
 
 @media (max-width: 900px) {
+  .journal-signup {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px 24px;
+  }
+
   .post-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

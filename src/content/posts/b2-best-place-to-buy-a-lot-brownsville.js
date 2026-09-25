@@ -1,6 +1,8 @@
 export default {
   id: "b2",
   category: "buying",
+  lane: "guide",
+  facts: ["price", "lotSize", "gated", "dues"],
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
   heroImage: "/assets/hero-desktop.jpg",
@@ -193,7 +195,7 @@ export default {
     summary:
       "Conviene el terreno que pasa seis revisiones para tu familia: acceso controlado, tamaño, cuotas, trayecto, zona de inundación y desarrollador. Como referencia, un terreno de 6,000 pies cuadrados en la Fase 1 del fraccionamiento privado Apple Woods cuesta $85,000 en 2026.",
     heroAlt:
-      "Rendering de la entrada planeada del fraccionamiento privado Apple Woods, con terrenos en venta en Brownsville, Texas",
+      "Render de la entrada planeada del fraccionamiento privado Apple Woods, con terrenos en venta en Brownsville, Texas",
     sections: [
       {
         h2: "¿Qué hace que un terreno en Brownsville sea mejor compra que otro?",

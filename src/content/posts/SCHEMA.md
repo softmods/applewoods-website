@@ -8,6 +8,8 @@ The lots page content lives in `src/content/lots.js` in the same shape.
 export default {
   id: "b2",                         // plan slot id
   category: "buying",               // buying | building | dues | community | brownsville
+  lane: "guide",                    // guide = answer-first search post; story = Smart Living editorial piece
+  facts: ["price", "lotSize"],      // keys from src/content/facts.js for the "At Apple Woods" box
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
   heroImage: "/assets/hero-desktop.jpg", // an existing asset, see list below

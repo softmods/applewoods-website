@@ -19,12 +19,12 @@ export const postTitleTag = (title) => (title.length + BRAND.length <= 60 ? titl
 
 export const BLOG_SEO = {
   en: {
-    title: "Apple Woods Blog | Lots and Homes in Brownsville, TX",
-    description: "Guides for buying a lot and building a home in Brownsville, Texas: lot sizes, gated communities, dues and prices, from the Apple Woods team.",
+    title: "Smart Living Journal | Apple Woods Blog, Brownsville TX",
+    description: "The Apple Woods blog: guides for buying a lot and building a home in Brownsville, Texas, and stories about living well once you are here.",
   },
   es: {
-    title: "Blog de Apple Woods | Terrenos en Brownsville, TX",
-    description: "Guías para comprar un terreno y construir tu casa en Brownsville, Texas: tamaños, fraccionamientos privados, cuotas y precios.",
+    title: "Smart Living Journal | Blog de Apple Woods, Brownsville",
+    description: "El blog de Apple Woods: guías para comprar tu terreno y construir tu casa en Brownsville, Texas, e ideas para vivir mejor.",
   },
 };
 
@@ -71,7 +71,7 @@ const shared = (homeGraph) => {
 };
 
 const homeCrumb = (lang) => ({ name: lang === "es" ? "Inicio" : "Home", url: urlFor("home", lang) });
-const blogCrumb = (lang) => ({ name: "Blog", url: urlFor("blog", lang) });
+const blogCrumb = (lang) => ({ name: "Smart Living Journal", url: urlFor("blog", lang) });
 
 export function lotsPageData(lots, lang, homeGraph) {
   const { org, place, site, products } = shared(homeGraph);

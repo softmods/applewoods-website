@@ -1,6 +1,8 @@
 export default {
   id: "b6",
   category: "community",
+  lane: "guide",
+  facts: ["gated", "dues", "homeSize", "price"],
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
   heroImage: "/assets/life-maintained-surroundings.jpg",
