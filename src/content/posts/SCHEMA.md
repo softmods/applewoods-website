@@ -33,6 +33,7 @@ export default {
       },
     ],
     faq: [{ q: "Question?", a: "Answer. Plain text, links allowed." }], // 3 to 5
+    sources: [{ name: "CDC, Child Activity: An Overview (2024)", href: "https://..." }], // stories: listed at the end instead of inline source blocks
   },
   es: { /* same keys, Spanish slug, written for an RGV or Mexican buyer */ },
 };

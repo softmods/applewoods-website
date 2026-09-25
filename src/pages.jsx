@@ -290,6 +290,24 @@ function Sections({ sections }) {
   ));
 }
 
+// Stories keep citations out of the body and list them here.
+function Sources({ items }) {
+  const { lang } = useLang();
+  if (!items?.length) return null;
+  return (
+    <section className="article-sources" aria-labelledby="sources-title">
+      <h2 id="sources-title">{lang === "es" ? "Fuentes" : "Sources"}</h2>
+      <ol>
+        {items.map((item) => (
+          <li key={item.href}>
+            <a href={item.href} target="_blank" rel="noopener">{item.name}</a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 function Faq({ items }) {
   const { lang } = useLang();
   if (!items?.length) return null;
@@ -526,6 +544,7 @@ export function PostPage({ slug }) {
             <Sections sections={p.sections} />
             <FactBox keys={post.facts} />
             <Faq items={p.faq} />
+            <Sources items={p.sources} />
           </div>
         </div>
       </article>
