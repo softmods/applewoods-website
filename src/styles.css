@@ -3399,7 +3399,7 @@ textarea.input {
 
 .pills li {
   padding: 4px 11px;
-  border-radius: 999px;
+  border-radius: 6px;
   background: var(--a-pill);
   color: var(--a-pill-ink);
   font-size: 13px;
@@ -3456,7 +3456,7 @@ textarea.input {
 .journal-filter button {
   padding: 7px 16px;
   border: 1px solid var(--a-line);
-  border-radius: 999px;
+  border-radius: 6px;
   background: var(--a-card);
   color: var(--a-text);
   font: inherit;
@@ -3477,7 +3477,7 @@ textarea.input {
   flex-direction: column;
   padding: 12px;
   border: 1px solid var(--a-line);
-  border-radius: 28px;
+  border-radius: 10px;
   background: var(--a-card);
   box-shadow: 0 1px 2px rgba(35, 26, 20, 0.04);
   transition: box-shadow 0.5s var(--a-ease), border-color 0.5s var(--a-ease), transform 0.5s var(--a-ease);
@@ -3497,7 +3497,7 @@ textarea.input {
 .post-card-image {
   margin: 0;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 6px;
   background: var(--a-pill);
 }
 
@@ -3543,7 +3543,7 @@ textarea.input {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 28px;
+  border-radius: 10px;
 }
 
 .post-card-title a:focus-visible {
@@ -3621,7 +3621,7 @@ textarea.input {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
   overflow: hidden;
-  border-radius: 36px;
+  border-radius: 10px;
   background: var(--a-pill);
 }
 
@@ -3777,7 +3777,7 @@ textarea.input {
   margin: 8px 0 24px;
   overflow-x: auto;
   border: 1px solid var(--a-line);
-  border-radius: 18px;
+  border-radius: 10px;
   background: var(--a-card);
 }
 
@@ -3818,7 +3818,7 @@ textarea.input {
   margin: 28px 0;
   padding: 24px 20px 18px;
   border: 1px solid var(--a-line);
-  border-radius: 24px;
+  border-radius: 10px;
   background: var(--a-card);
 }
 
@@ -3849,11 +3849,6 @@ textarea.input {
 
 .subpage-docs {
   margin: 12px 0 24px;
-}
-
-.subpage-docs .lot-doc {
-  border-radius: 18px;
-  overflow: hidden;
 }
 
 .article-faq dl {
@@ -3900,7 +3895,7 @@ textarea.input {
   min-height: 520px;
   margin: 96px auto 24px;
   overflow: hidden;
-  border-radius: 36px;
+  border-radius: 10px;
   isolation: isolate;
 }
 
@@ -3964,7 +3959,7 @@ textarea.input {
   align-items: center;
   min-height: 44px;
   padding: 0 22px;
-  border-radius: 999px;
+  border-radius: 6px;
   font-size: 15px;
   font-weight: 600;
   text-decoration: none;
@@ -4070,7 +4065,7 @@ textarea.input {
   }
 
   .article-cover {
-    border-radius: 22px;
+    border-radius: 10px;
   }
 
   .article-cover img {
@@ -4101,7 +4096,7 @@ textarea.input {
   .cta-band {
     min-height: 460px;
     margin-top: 64px;
-    border-radius: 24px;
+    border-radius: 10px;
   }
 
   .cta-band-copy {
