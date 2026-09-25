@@ -10,6 +10,10 @@ import { readLeadSource } from "./lead-source";
 import { imgProps } from "./img.js";
 import { useAlt } from "./seo-alt.js";
 import { SEO } from "./seo.js";
+import { pageLinks, sectionHref } from "./site-links.js";
+import { POSTS } from "./content/posts/index.js";
+import { PAGES, pathFor } from "./lang.js";
+import { BlogIndexPage, PostPage, LotsPage, NotFoundPage } from "./pages.jsx";
 import "./styles.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -276,11 +280,14 @@ function useVersionTwoMotion() {
   return rootRef;
 }
 
-function V2Nav() {
+export function V2Nav() {
   const c = useContent();
+  const langCtx = useLang();
   const { nav } = c;
+  const onHome = langCtx.page === "home";
   const [hidden, setHidden] = useState(false);
-  const [pastHero, setPastHero] = useState(false);
+  // Pages without the hero start in the scrolled (solid) header state.
+  const [pastHero, setPastHero] = useState(!onHome);
 
   useEffect(() => {
     const amenities = document.querySelector(".v2-amenities");
@@ -313,12 +320,21 @@ function V2Nav() {
       }
       aria-label="Primary navigation"
     >
-      <a className="v2-logo" href="#top" aria-label="Apple Woods home">
+      <a className="v2-logo" href={onHome ? "#top" : langCtx.homePath} aria-label="Apple Woods home">
         <img {...imgProps("/assets/applewoods-logo.png")} alt={nav.logoAlt} />
       </a>
       <nav>
         {nav.links.map((link) => (
-          <a href={link.href} key={link.href}>
+          <a href={sectionHref(link.href, langCtx)} key={link.href}>
+            {link.label}
+          </a>
+        ))}
+        {pageLinks(langCtx.lang).map((link) => (
+          <a
+            href={link.href}
+            key={link.page}
+            aria-current={langCtx.page === link.page || (link.page === "blog" && langCtx.page === "post") ? "page" : undefined}
+          >
             {link.label}
           </a>
         ))}
@@ -333,7 +349,7 @@ function V2Nav() {
         >
           {nav.portal.label}
         </a>
-        <a className="v2-owner-link v2-contact-link" href="#contact">
+        <a className="v2-owner-link v2-contact-link" href={sectionHref("#contact", langCtx)}>
           {nav.cta}
         </a>
         <MobileMenu />
@@ -941,6 +957,7 @@ function PhaseOne() {
         </div>
       </div>
       <p className="phase-note">{phaseOne.phaseNote}</p>
+      <LotsPageLink />
       <Lightbox open={mapOpen} onClose={() => setMapOpen(false)} label={phase.mapAlt}>
         <img src={`${phase.map}@2x.png`} alt={altFor(phase.map, phase.mapAlt)} loading="lazy" decoding="async" />
       </Lightbox>
@@ -1106,7 +1123,7 @@ function TurnstileWidget({ siteKey, onError, onTokenChange, retryAttempt }) {
   return <div className="turnstile-container" ref={containerRef} />;
 }
 
-function Contact() {
+export function Contact({ withFaq = true } = {}) {
   const c = useContent();
   const { lang } = useLang();
   const { contact } = c;
@@ -1467,7 +1484,8 @@ function Contact() {
         </form>
       </div>
 
-      <div className="faq">
+      {withFaq ? (
+      <div className="faq" id="faq">
         <p className="eyebrow">{contact.faq.eyebrow}</p>
         <h2>{emphasize(contact.faq.heading)}</h2>
         {contact.faq.intro ? (
@@ -1483,8 +1501,8 @@ function Contact() {
             </ol>
           </div>
         ) : null}
-        {contact.faq.groups.map((group) => (
-          <div className="faq-group" key={group.label}>
+        {contact.faq.groups.map((group, groupIndex) => (
+          <div className="faq-group" key={group.label} id={FAQ_GROUP_IDS[groupIndex]}>
             <h3 className="faq-group-label">{group.label}</h3>
             {group.items.map((item) => (
               <details key={item.question}>
@@ -1494,18 +1512,21 @@ function Contact() {
             ))}
           </div>
         ))}
+        <RelatedReading />
       </div>
+      ) : null}
     </section>
   );
 }
 
-function Footer() {
+export function Footer() {
   const c = useContent();
+  const langCtx = useLang();
   const { footer, nav } = c;
   return (
     <footer className="footer" id="footer">
       <div className="footer-inner">
-        <a className="footer-logo" href="#top" aria-label="Apple Woods home">
+        <a className="footer-logo" href={langCtx.page === "home" ? "#top" : langCtx.homePath} aria-label="Apple Woods home">
           <img {...imgProps("/assets/applewoods-logo.png")} alt={nav.logoAlt} />
         </a>
 
@@ -1534,7 +1555,12 @@ function Footer() {
             </div>
             <nav className="footer-list" aria-label="Footer navigation">
               {footer.nav.map((link) => (
-                <a href={link.href} key={link.href}>
+                <a href={sectionHref(link.href, langCtx)} key={link.href}>
+                  {link.label}
+                </a>
+              ))}
+              {pageLinks(langCtx.lang).map((link) => (
+                <a href={link.href} key={link.page}>
                   {link.label}
                 </a>
               ))}
@@ -1571,10 +1597,67 @@ function VersionTwoPage() {
   );
 }
 
-export default function App({ lang }) {
+// Stable ids for the FAQ groups, in the order the content files list them.
+// Blog posts link to these (/#faq-size). Ids only, the client's labels stay.
+const FAQ_GROUP_IDS = ["faq-general", "faq-cost", "faq-size", "faq-shared-standards", "faq-life"];
+
+const LOTS_LINK = {
+  en: "See every lot, price and phase",
+  es: "Ver todos los terrenos y precios",
+};
+
+function LotsPageLink() {
+  const { lang } = useLang();
   return (
-    <ContentProvider lang={lang}>
-      <VersionTwoPage />
+    <p className="lots-page-link">
+      <a href={pathFor("lots", lang)}>{LOTS_LINK[lang]} &rarr;</a>
+    </p>
+  );
+}
+
+const RELATED = { en: "Related reading", es: "Lecturas relacionadas" };
+
+// Softmods-owned strip under the client's FAQ: links to the blog posts.
+function RelatedReading() {
+  const { lang } = useLang();
+  if (!POSTS.length) return null;
+  return (
+    <nav className="related-reading" aria-label={RELATED[lang]}>
+      <h3 className="faq-group-label">{RELATED[lang]}</h3>
+      <ul>
+        {POSTS.slice(0, 4).map((post) => (
+          <li key={post.id}>
+            <a href={pathFor("post", lang, post[lang].slug)}>{post[lang].h1}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+const PAGE_COMPONENTS = {
+  home: VersionTwoPage,
+  lots: LotsPage,
+  blog: BlogIndexPage,
+  post: PostPage,
+  notfound: NotFoundPage,
+};
+
+// The same page in each language, for the switcher and hreflang.
+export function alternatesFor(page, lang, slug) {
+  if (page === "post") {
+    const post = POSTS.find((p) => p[lang].slug === slug);
+    return post ? { en: pathFor("post", "en", post.en.slug), es: pathFor("post", "es", post.es.slug) } : null;
+  }
+  return PAGES[page] || null;
+}
+
+export default function App({ lang, page = "home", slug }) {
+  const Page = PAGE_COMPONENTS[page] || NotFoundPage;
+  const alternates = alternatesFor(page, lang, slug) || undefined;
+  return (
+    <ContentProvider lang={lang} page={page} alternates={alternates}>
+      <Page slug={slug} />
     </ContentProvider>
   );
 }

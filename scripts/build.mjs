@@ -29,58 +29,97 @@ await build({
   build: { ssr: "src/entry-server.jsx", outDir: ssrDir, emptyOutDir: true },
 });
 
-const { render, jsonLd } = await import(pathToFileURL(path.join(ssrDir, "entry-server.js")).href);
-const { SEO } = await import(pathToFileURL(path.join(root, "src/seo.js")).href);
-const { LANGS, DEFAULT_LANG, urlForLang, pathForLang } = await import(
-  pathToFileURL(path.join(root, "src/lang.js")).href
-);
+const { render, jsonLd, head, routes } = await import(pathToFileURL(path.join(ssrDir, "entry-server.js")).href);
+const { SITE_URL } = await import(pathToFileURL(path.join(root, "src/lang.js")).href);
 
 const template = await readFile(path.join(dist, "index.html"), "utf8");
 const escapeAttr = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+const escapeText = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const replaceMeta = (html, attr, name, value) => {
   const re = new RegExp(`(<meta\\s+${attr}="${name}"\\s+content=")[^"]*(")`, "g");
   if (!re.test(html)) throw new Error(`index.html has no <meta ${attr}="${name}">`);
   return html.replace(re, `$1${escapeAttr(value)}$2`);
 };
+const abs = (p) => (p === "/" ? `${SITE_URL}/` : `${SITE_URL}${p}`);
 
-// 3. One HTML file per language: / for English, /es for Spanish.
+// Preview deploys (staging) stay out of search results so they never compete
+// with www. Local and production builds are unaffected.
+const isPreview = Boolean(process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production");
+
+// 3. One HTML file per page and language (routes() in src/entry-server.jsx).
 const rendered = {};
-for (const lang of LANGS) {
-  const seo = SEO[lang];
-  if (!seo) throw new Error(`src/seo.js has no entry for "${lang}"`);
-  const appHtml = render(lang);
-  if (!appHtml.includes("v2-hero")) throw new Error(`Prerender for "${lang}" produced no hero markup`);
-  rendered[lang] = appHtml;
+const titles = new Map();
+const sitemap = [];
+for (const route of routes()) {
+  const meta = head(route);
+  if (!meta?.title || !meta?.description) throw new Error(`${route.path} has no title or description`);
+  if (titles.has(meta.title)) throw new Error(`Duplicate title on ${route.path} and ${titles.get(meta.title)}: ${meta.title}`);
+  titles.set(meta.title, route.path);
+
+  const appHtml = render(route);
+  if (route.page === "home" && !appHtml.includes("v2-hero")) throw new Error(`Prerender for "${route.lang}" produced no hero markup`);
+  rendered[route.path] = appHtml;
 
   let html = template;
-  html = html.replace('<html lang="en">', `<html lang="${lang}">`);
-  html = html.replace(/<title>[^<]*<\/title>/, `<title>${seo.title}</title>`);
-  html = replaceMeta(html, "name", "description", seo.description);
-  html = replaceMeta(html, "property", "og:title", seo.title);
-  html = replaceMeta(html, "property", "og:description", seo.description);
-  html = replaceMeta(html, "property", "og:url", urlForLang(lang));
-  html = replaceMeta(html, "name", "twitter:title", seo.title);
-  html = replaceMeta(html, "name", "twitter:description", seo.description);
-  html = html.replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${urlForLang(lang)}" />`);
-  // Preview deploys (staging and SEO aliases) stay out of search results so
-  // they never compete with www. Local and production builds are unaffected.
-  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production") {
+  html = html.replace('<html lang="en">', `<html lang="${route.lang}">`);
+  html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapeText(meta.title)}</title>`);
+  html = replaceMeta(html, "name", "description", meta.description);
+  html = replaceMeta(html, "property", "og:title", meta.title);
+  html = replaceMeta(html, "property", "og:description", meta.description);
+  html = replaceMeta(html, "property", "og:url", abs(route.path));
+  html = replaceMeta(html, "property", "og:type", meta.type);
+  html = replaceMeta(html, "name", "twitter:title", meta.title);
+  html = replaceMeta(html, "name", "twitter:description", meta.description);
+  html = html.replace(/<link rel="canonical" href="[^"]*" \/>/, route.noindex ? "" : `<link rel="canonical" href="${abs(route.path)}" />`);
+  const hreflang = route.alternates
+    ? [
+        `<link rel="alternate" hreflang="en" href="${abs(route.alternates.en)}" />`,
+        `<link rel="alternate" hreflang="es" href="${abs(route.alternates.es)}" />`,
+        `<link rel="alternate" hreflang="x-default" href="${abs(route.alternates.en)}" />`,
+      ].join("\n    ")
+    : "";
+  html = html.replace(/<link rel="alternate" hreflang="en"[^>]*\/>\s*<link rel="alternate" hreflang="es"[^>]*\/>\s*<link rel="alternate" hreflang="x-default"[^>]*\/>/, hreflang);
+  if (route.page !== "home") {
+    // The hero preloads only help the home page.
+    html = html.replace(/\s*<link rel="preload" as="image"[^>]*\/>/g, "");
+  }
+  if (isPreview || route.noindex) {
     html = html.replace("</head>", `    <meta name="robots" content="noindex, nofollow" />\n  </head>`);
   }
-  const ld = jsonLd(lang);
-  const faq = ld["@graph"].find((n) => n["@type"] === "FAQPage");
-  if (!faq || faq.mainEntity.length < 10) throw new Error(`JSON-LD for "${lang}" has too few FAQ entries`);
-  const ldScript = `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>`;
-  html = html.replace("</head>", `    ${ldScript}\n  </head>`);
+  const ld = jsonLd(route);
+  if (route.page === "home") {
+    const faq = ld["@graph"].find((n) => n["@type"] === "FAQPage");
+    if (!faq || faq.mainEntity.length < 10) throw new Error(`JSON-LD for "${route.lang}" has too few FAQ entries`);
+  }
+  if (ld) {
+    const ldScript = `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>`;
+    html = html.replace("</head>", `    ${ldScript}\n  </head>`);
+  }
   if (!html.includes("<!--app-html-->")) throw new Error("index.html lost the <!--app-html--> marker");
   html = html.replace("<!--app-html-->", appHtml);
 
-  const outDir = lang === DEFAULT_LANG ? dist : path.join(dist, pathForLang(lang));
-  await mkdir(outDir, { recursive: true });
-  await writeFile(path.join(outDir, "index.html"), html);
-  console.log(`prerendered ${pathForLang(lang)} (${(html.length / 1024).toFixed(0)} KB)`);
+  const file = route.page === "notfound" ? path.join(dist, "404.html") : path.join(dist, route.path, "index.html");
+  await mkdir(path.dirname(file), { recursive: true });
+  await writeFile(file, html);
+  if (!route.noindex) sitemap.push(route);
+  console.log(`prerendered ${route.path} (${(html.length / 1024).toFixed(0)} KB)`);
 }
 
-if (rendered.en === rendered.es) throw new Error("English and Spanish prerenders are identical; localization did not apply");
+if (rendered["/"] === rendered["/es"]) throw new Error("English and Spanish prerenders are identical; localization did not apply");
+
+// 4. sitemap.xml from the same route table, with the hreflang pair per URL.
+const lastmod = (route) => route.post?.dateModified || route.post?.datePublished || new Date().toISOString().slice(0, 10);
+const urls = sitemap.map((route) => {
+  const alts = route.alternates
+    ? ["en", "es"].map((l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${abs(route.alternates[l])}" />`)
+        .concat(`    <xhtml:link rel="alternate" hreflang="x-default" href="${abs(route.alternates.en)}" />`)
+    : [];
+  return ["  <url>", `    <loc>${abs(route.path)}</loc>`, `    <lastmod>${lastmod(route)}</lastmod>`, ...alts, "  </url>"].join("\n");
+});
+await writeFile(
+  path.join(dist, "sitemap.xml"),
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join("\n")}\n</urlset>\n`
+);
+console.log(`sitemap.xml (${sitemap.length} URLs)`);
 
 await rm(ssrDir, { recursive: true, force: true });

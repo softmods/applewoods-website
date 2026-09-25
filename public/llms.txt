@@ -11,7 +11,14 @@
 - Location: Brownsville, TX
 - Contact: inquiry form and direct sales contact
 
+## Pages
+
+- https://www.applewoods.us/ and https://www.applewoods.us/es: the community, amenities (planned), Phase 1 and Phase 2 maps and price sheets, FAQ, location, contact
+- https://www.applewoods.us/lots and https://www.applewoods.us/es/terrenos: every lot type with list prices, Phase 1 and Phase 2 maps, what comes with a lot, building rules, dues, availability
+- https://www.applewoods.us/blog and https://www.applewoods.us/es/blog: guides for buying a lot and building a home in Brownsville, TX
+- https://www.applewoods.us/sitemap.xml lists every page in both languages
+
 ## Notes
 
-- Single-page site; all sections live at the root URL with hash anchors.
+- The home page keeps its sections at hash anchors (#phase-one, #location, #contact, #faq).
 - Pricing and lot availability change; the price sheets on the page are the current reference.

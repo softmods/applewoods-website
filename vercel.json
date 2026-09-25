@@ -9,6 +9,11 @@
   ],
   "rewrites": [
     { "source": "/es", "destination": "/es/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/lots", "destination": "/lots/index.html" },
+    { "source": "/es/terrenos", "destination": "/es/terrenos/index.html" },
+    { "source": "/blog", "destination": "/blog/index.html" },
+    { "source": "/es/blog", "destination": "/es/blog/index.html" },
+    { "source": "/blog/:slug", "destination": "/blog/:slug/index.html" },
+    { "source": "/es/blog/:slug", "destination": "/es/blog/:slug/index.html" }
   ]
 }

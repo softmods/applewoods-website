@@ -41,7 +41,7 @@ export const useLang = () => useContext(LangContext);
 // Language comes from the URL (see src/lang.js), never from state. Switching
 // language is a navigation to the other prerendered page. The stored value only
 // decides where a returning visitor lands when they open the bare domain.
-export function ContentProvider({ lang: langProp, children }) {
+export function ContentProvider({ lang: langProp, page = "home", alternates, children }) {
   const lang = LANGS.includes(langProp) ? langProp : DEFAULT_LANG;
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -51,17 +51,22 @@ export function ContentProvider({ lang: langProp, children }) {
   const value = useMemo(
     () => ({
       lang,
+      page,
+      // Home page of this language; section links on other pages go through it.
+      homePath: pathForLang(lang),
+      // Same page in the other language. Only the home page keeps the #section,
+      // other pages have no matching anchors across languages.
       hrefFor: (next) => {
-        const hash = typeof window !== "undefined" ? window.location.hash : "";
+        const hash = typeof window !== "undefined" && page === "home" ? window.location.hash : "";
         const search = typeof window !== "undefined" ? window.location.search : "";
-        return pathForLang(next) + search + hash;
+        return (alternates?.[next] ?? pathForLang(next)) + search + hash;
       },
       rememberLang: (next) => {
         if (!LANGS.includes(next)) return;
         try { window.localStorage.setItem(LANG_STORAGE_KEY, next); } catch (e) {}
       },
     }),
-    [lang]
+    [lang, page, alternates]
   );
   return (
     <LangContext.Provider value={value}>

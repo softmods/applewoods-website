@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ListIcon, XIcon } from "@phosphor-icons/react";
-import { useContent } from "../content";
+import { useContent, useLang } from "../content";
+import { pageLinks, sectionHref } from "../site-links";
 import { useMounted } from "../useMounted";
 
 export default function MobileMenu() {
   const c = useContent();
+  const langCtx = useLang();
   const mounted = useMounted();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef(null);
@@ -29,10 +31,13 @@ export default function MobileMenu() {
 
   const go = (href) => {
     setOpen(false);
-    window.setTimeout(() => {
-      const el = document.querySelector(href);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 380);
+    const el = href.startsWith("#") ? document.querySelector(href) : null;
+    if (!el) {
+      // Not on this page (lots, blog): go to the section on the home page.
+      window.location.href = sectionHref(href, langCtx);
+      return;
+    }
+    window.setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 380);
   };
 
   return (
@@ -70,6 +75,11 @@ export default function MobileMenu() {
           <nav className="v2-mobile-links" aria-label="Sections">
             {c.nav.links.map((link) => (
               <button type="button" key={link.href} onClick={() => go(link.href)}>
+                {link.label}
+              </button>
+            ))}
+            {pageLinks(langCtx.lang).map((link) => (
+              <button type="button" key={link.page} onClick={() => go(link.href)}>
                 {link.label}
               </button>
             ))}

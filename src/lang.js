@@ -19,3 +19,37 @@ export function pathForLang(lang) {
 export function urlForLang(lang) {
   return lang === DEFAULT_LANG ? `${SITE_URL}/` : `${SITE_URL}${pathForLang(lang)}`;
 }
+
+// Pages beyond the home page. Each page is its own prerendered document; there
+// is no client-side router. `slug` only applies to blog posts.
+export const PAGES = {
+  home: { en: "/", es: "/es" },
+  lots: { en: "/lots", es: "/es/terrenos" },
+  blog: { en: "/blog", es: "/es/blog" },
+};
+
+export function pathFor(page, lang, slug) {
+  if (page === "post") return `${PAGES.blog[lang]}/${slug}`;
+  return PAGES[page][lang];
+}
+
+export function urlFor(page, lang, slug) {
+  const p = pathFor(page, lang, slug);
+  return p === "/" ? `${SITE_URL}/` : `${SITE_URL}${p}`;
+}
+
+// "/es/blog/foo" -> { lang: "es", page: "post", slug: "foo" }. Unknown paths
+// come back as page "notfound" so the client never hydrates the wrong page.
+export function parsePath(pathname = "/") {
+  const clean = String(pathname).replace(/\/+$/, "") || "/";
+  for (const [page, paths] of Object.entries(PAGES)) {
+    for (const lang of LANGS) if (paths[lang] === clean) return { lang, page };
+  }
+  for (const lang of LANGS) {
+    const prefix = `${PAGES.blog[lang]}/`;
+    if (clean.startsWith(prefix) && !clean.slice(prefix.length).includes("/")) {
+      return { lang, page: "post", slug: clean.slice(prefix.length) };
+    }
+  }
+  return { lang: langFromPath(clean), page: "notfound" };
+}

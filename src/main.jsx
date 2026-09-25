@@ -1,15 +1,16 @@
 import React from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App";
-import { langFromPath } from "./lang";
+import { parsePath } from "./lang";
 import { captureLeadSource } from "./lead-source";
 
 // The HTML for this URL was prerendered at build time (scripts/build.mjs), so
 // the client hydrates the existing markup instead of rendering from empty.
 captureLeadSource();
 const container = document.getElementById("root");
-const lang = langFromPath(window.location.pathname);
-const app = <App lang={lang} />;
+// 404.html is served for unknown paths; parsePath returns page "notfound" for them.
+const { lang, page, slug } = parsePath(window.location.pathname);
+const app = <App lang={lang} page={page} slug={slug} />;
 
 if (import.meta.env.VITE_HALLOW === "1") {
   // Preview-only feedback overlay wraps the tree, so this path renders fresh.
