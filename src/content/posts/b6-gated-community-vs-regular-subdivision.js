@@ -3,7 +3,7 @@ export default {
   category: "community",
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
-  heroImage: "/assets/hero-desktop.jpg",
+  heroImage: "/assets/life-maintained-surroundings.jpg",
   en: {
     slug: "gated-community-vs-regular-subdivision",
     title: "Gated community vs regular subdivision: what changes",
@@ -13,7 +13,7 @@ export default {
     summary:
       "A gated community controls who drives in and holds every home to the same written standards, paid for with mandatory dues. An open subdivision has public streets and only the rules that were recorded for it.",
     heroAlt:
-      "Rendering of the planned gated entrance at Apple Woods, a gated community in Brownsville, TX",
+      "Rendering of a tree-lined, maintained sidewalk inside the Apple Woods gated community in Brownsville, TX",
     sections: [
       {
         h2: "What is the difference between a gated community and a regular subdivision?",
@@ -182,7 +182,7 @@ export default {
     summary:
       "En un fraccionamiento privado se controla quién entra, todas las casas siguen las mismas reglas por escrito y todos pagan cuotas. En una colonia abierta las calles son públicas y solo aplican las restricciones que se registraron para ella.",
     heroAlt:
-      "Render de la entrada planeada de Apple Woods, fraccionamiento privado en Brownsville, TX",
+      "Render de una banqueta arbolada dentro del fraccionamiento privado Apple Woods en Brownsville, TX",
     sections: [
       {
         h2: "¿Qué cambia entre un fraccionamiento privado y una colonia abierta?",
