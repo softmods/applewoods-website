@@ -1,0 +1,56 @@
+{
+  "/assets/hero-desktop.jpg": {
+    "src": "/assets/blog/hero-desktop-960.webp",
+    "srcSet": "/assets/blog/hero-desktop-640.webp 640w, /assets/blog/hero-desktop-960.webp 960w, /assets/blog/hero-desktop-1440.webp 1440w, /assets/blog/hero-desktop-1920.webp 1920w",
+    "width": 1920,
+    "height": 1080
+  },
+  "/assets/life-maintained-surroundings.jpg": {
+    "src": "/assets/blog/life-maintained-surroundings-960.webp",
+    "srcSet": "/assets/blog/life-maintained-surroundings-640.webp 640w, /assets/blog/life-maintained-surroundings-960.webp 960w, /assets/blog/life-maintained-surroundings-1440.webp 1440w, /assets/blog/life-maintained-surroundings-1672.webp 1672w",
+    "width": 1672,
+    "height": 941
+  },
+  "/assets/lot-classic.jpg": {
+    "src": "/assets/blog/lot-classic-960.webp",
+    "srcSet": "/assets/blog/lot-classic-640.webp 640w, /assets/blog/lot-classic-960.webp 960w, /assets/blog/lot-classic-1440.webp 1440w, /assets/blog/lot-classic-1448.webp 1448w",
+    "width": 1448,
+    "height": 1086
+  },
+  "/assets/lot-corner.jpg": {
+    "src": "/assets/blog/lot-corner-960.webp",
+    "srcSet": "/assets/blog/lot-corner-640.webp 640w, /assets/blog/lot-corner-960.webp 960w, /assets/blog/lot-corner-1402.webp 1402w",
+    "width": 1402,
+    "height": 1122
+  },
+  "/assets/aw-water-walk.jpg": {
+    "src": "/assets/blog/aw-water-walk-960.webp",
+    "srcSet": "/assets/blog/aw-water-walk-640.webp 640w, /assets/blog/aw-water-walk-960.webp 960w, /assets/blog/aw-water-walk-1040.webp 1040w",
+    "width": 1040,
+    "height": 1512
+  },
+  "/assets/beautyaw.png": {
+    "src": "/assets/blog/beautyaw-941.webp",
+    "srcSet": "/assets/blog/beautyaw-640.webp 640w, /assets/blog/beautyaw-941.webp 941w",
+    "width": 941,
+    "height": 1672
+  },
+  "/assets/life-clubhouse.jpg": {
+    "src": "/assets/blog/life-clubhouse-960.webp",
+    "srcSet": "/assets/blog/life-clubhouse-640.webp 640w, /assets/blog/life-clubhouse-960.webp 960w, /assets/blog/life-clubhouse-1440.webp 1440w, /assets/blog/life-clubhouse-1448.webp 1448w",
+    "width": 1448,
+    "height": 1086
+  },
+  "/assets/security-built-in-camera.jpg": {
+    "src": "/assets/blog/security-built-in-camera-960.webp",
+    "srcSet": "/assets/blog/security-built-in-camera-640.webp 640w, /assets/blog/security-built-in-camera-960.webp 960w, /assets/blog/security-built-in-camera-1254.webp 1254w",
+    "width": 1254,
+    "height": 1254
+  },
+  "/assets/life-outdoor-spaces.jpg": {
+    "src": "/assets/blog/life-outdoor-spaces-960.webp",
+    "srcSet": "/assets/blog/life-outdoor-spaces-640.webp 640w, /assets/blog/life-outdoor-spaces-960.webp 960w, /assets/blog/life-outdoor-spaces-1440.webp 1440w, /assets/blog/life-outdoor-spaces-1672.webp 1672w",
+    "width": 1672,
+    "height": 941
+  }
+}

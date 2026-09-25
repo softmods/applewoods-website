@@ -4,7 +4,7 @@ import Lightbox from "./components/Lightbox";
 import { useContent, useLang } from "./content";
 import { POSTS, postBySlug, CATEGORIES } from "./content/posts/index.js";
 import LOTS from "./content/lots.js";
-import { imgProps } from "./img.js";
+import { imgProps, heroImgProps } from "./img.js";
 import { pathFor } from "./lang";
 
 // Pages Softmods writes (lots page, blog). Content comes from src/content/lots.js
@@ -30,6 +30,14 @@ const UI = {
     notFoundBody: "That page does not exist. The home page and the lot list are the best places to start.",
     openMap: "Open the lot map",
     openSheet: "Open the price sheet",
+    journal: "Apple Woods journal",
+    indexTitle: "Buying a lot in Brownsville, explained",
+    minRead: (n) => `${n} min read`,
+    more: "Keep reading",
+    ctaTitle: "Ready to pick your lot?",
+    ctaBody: "Phase 1 homesites start at $85,000. Ask for the current lot list and we will send what is still available.",
+    ctaButton: "Ask for the lot list",
+    viewLots: "See lots and prices",
   },
   es: {
     blogTitle: "Blog de Apple Woods",
@@ -49,6 +57,14 @@ const UI = {
     notFoundBody: "Esa página no existe. La página principal y la lista de terrenos son el mejor lugar para empezar.",
     openMap: "Abrir el mapa de terrenos",
     openSheet: "Abrir la lista de precios",
+    journal: "Diario de Apple Woods",
+    indexTitle: "Comprar un terreno en Brownsville, paso a paso",
+    minRead: (n) => `${n} min de lectura`,
+    more: "Sigue leyendo",
+    ctaTitle: "¿Listo para elegir tu terreno?",
+    ctaBody: "Los terrenos de la Fase 1 empiezan en $85,000. Pide la lista actual y te mandamos lo que sigue disponible.",
+    ctaButton: "Pide la lista de terrenos",
+    viewLots: "Ver terrenos y precios",
   },
 };
 
@@ -104,21 +120,6 @@ function Shell({ children }) {
       </main>
       <Footer />
     </div>
-  );
-}
-
-function Breadcrumbs({ items }) {
-  const { lang } = useLang();
-  return (
-    <nav className="subpage-crumbs" aria-label={UI[lang].breadcrumb}>
-      <ol>
-        {items.map((item, i) => (
-          <li key={item.label}>
-            {i < items.length - 1 ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
-          </li>
-        ))}
-      </ol>
-    </nav>
   );
 }
 
@@ -253,13 +254,13 @@ function Block({ block }) {
     );
   }
   if (block.phaseDocs) return <PhaseDocs phaseKey={block.phaseDocs} />;
-  if (block.contactForm) return null; // rendered once below the article
+  if (block.contactForm) return null; // the page renders the form once, below the article
   return null;
 }
 
 function Sections({ sections }) {
   return sections.map((section) => (
-    <section className="post-section" key={section.h2} id={slugify(section.h2)}>
+    <section className="article-section" key={section.h2} id={slugify(section.h2)}>
       <h2>{section.h2}</h2>
       {section.blocks.map((block, i) => (
         <Block block={block} key={i} />
@@ -272,87 +273,158 @@ function Faq({ items }) {
   const { lang } = useLang();
   if (!items?.length) return null;
   return (
-    <section className="post-section post-faq" id="faq">
+    <section className="article-section article-faq" id="faq">
       <h2>{UI[lang].faq}</h2>
-      {items.map((item) => (
-        <div className="post-faq-item" key={item.q}>
-          <h3>{item.q}</h3>
-          <p><Rich text={item.a} /></p>
-        </div>
-      ))}
+      <dl>
+        {items.map((item) => (
+          <div className="article-faq-item" key={item.q}>
+            <dt>{item.q}</dt>
+            <dd><Rich text={item.a} /></dd>
+          </div>
+        ))}
+      </dl>
     </section>
   );
 }
 
-function Hero({ image, alt }) {
-  if (!image) return null;
+// Word count of everything a reader reads, at about 220 words a minute.
+const readMinutes = (p) => {
+  const words = [p.summary, ...p.sections.flatMap((s) => [s.h2, ...s.blocks.flatMap((b) => [b.p, b.quote, ...(b.ul || []), ...(b.ol || [])])]), ...(p.faq || []).flatMap((f) => [f.q, f.a])]
+    .filter(Boolean)
+    .join(" ")
+    .split(/\s+/).length;
+  return Math.max(1, Math.round(words / 220));
+};
+
+function Pills({ post }) {
+  const { lang } = useLang();
   return (
-    <figure className="subpage-hero">
-      <img {...imgProps(image)} alt={alt} fetchpriority="high" decoding="async" />
+    <ul className="pills" aria-label={lang === "es" ? "Detalles" : "Details"}>
+      <li>{CATEGORIES[post.category]?.[lang]}</li>
+      <li>{UI[lang].minRead(readMinutes(post[lang]))}</li>
+    </ul>
+  );
+}
+
+function CoverImage({ image, alt, sizes, className, priority }) {
+  return (
+    <figure className={className}>
+      <img
+        {...heroImgProps(image, sizes)}
+        alt={alt}
+        loading={priority ? "eager" : "lazy"}
+        fetchpriority={priority ? "high" : undefined}
+        decoding="async"
+      />
     </figure>
   );
 }
 
-function PostCard({ post }) {
+// Card for the index grid and "Keep reading". The title link stretches over
+// the whole card, so one tab stop and one link per post.
+function PostCard({ post, featured }) {
   const { lang } = useLang();
   const p = post[lang];
   const href = pathFor("post", lang, p.slug);
   return (
-    <article className="post-card">
-      <a href={href} className="post-card-image" tabIndex={-1} aria-hidden="true">
-        <img {...imgProps(post.heroImage)} alt="" loading="lazy" decoding="async" />
-      </a>
-      <p className="post-meta">
-        <span>{CATEGORIES[post.category]?.[lang]}</span>
+    <article className={"post-card" + (featured ? " is-featured" : "")}>
+      <CoverImage
+        image={post.heroImage}
+        alt=""
+        className="post-card-image"
+        sizes={featured ? "(max-width: 760px) calc(100vw - 56px), 600px" : "(max-width: 760px) calc(100vw - 56px), 360px"}
+      />
+      <div className="post-card-body">
         <time dateTime={post.datePublished}>{formatDate(post.datePublished, lang)}</time>
-      </p>
-      <h2><a href={href}>{p.h1}</a></h2>
-      <p>{p.summary}</p>
+        <h2 className="post-card-title">
+          <a href={href}>{p.h1}</a>
+        </h2>
+        <p>{featured ? p.summary : p.description}</p>
+        <Pills post={post} />
+      </div>
     </article>
   );
 }
 
-export function BlogIndexPage() {
+function CtaBand() {
   const { lang, homePath } = useLang();
+  const t = UI[lang];
+  return (
+    <section className="cta-band" aria-labelledby="cta-band-title">
+      <div className="cta-band-media">
+        <img {...heroImgProps("/assets/hero-desktop.jpg", "(max-width: 1280px) 100vw, 1280px")} alt="" loading="lazy" decoding="async" />
+      </div>
+      <div className="cta-band-copy">
+        <h2 id="cta-band-title">{t.ctaTitle}</h2>
+        <p>{t.ctaBody}</p>
+        <div className="cta-band-actions">
+          <a className="button-solid" href={`${homePath === "/" ? "/" : homePath}#contact`}>{t.ctaButton}</a>
+          <a className="button-ghost" href={pathFor("lots", lang)}>{t.viewLots}</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function BlogIndexPage() {
+  const { lang } = useLang();
   const t = UI[lang];
   const [category, setCategory] = useState("all");
   const used = Object.keys(CATEGORIES).filter((k) => POSTS.some((p) => p.category === k));
   const shown = category === "all" ? POSTS : POSTS.filter((p) => p.category === category);
+  const [first, ...rest] = shown;
   return (
     <Shell>
-      <div className="subpage-inner">
-        <Breadcrumbs items={[{ label: t.home, href: homePath }, { label: t.blog }]} />
-        <header className="subpage-header">
-          <h1>{t.blogTitle}</h1>
-          <p className="subpage-summary">{t.blogIntro}</p>
+      <div className="journal">
+        <header className="journal-header">
+          <p className="journal-eyebrow">{t.journal}</p>
+          <h1>{t.indexTitle}</h1>
+          <p>{t.blogIntro}</p>
         </header>
-        {used.length > 1 ? (
-          <div className="phase-switch blog-filter" role="group" aria-label={t.filterLabel}>
+        {POSTS.length >= 6 && used.length > 1 ? (
+          <div className="journal-filter" role="group" aria-label={t.filterLabel}>
             {["all", ...used].map((key) => (
-              <button
-                key={key}
-                type="button"
-                className={key === category ? "is-active" : ""}
-                aria-pressed={key === category}
-                onClick={() => setCategory(key)}
-              >
+              <button key={key} type="button" aria-pressed={key === category} onClick={() => setCategory(key)}>
                 {key === "all" ? t.all : CATEGORIES[key][lang]}
               </button>
             ))}
           </div>
         ) : null}
-        <div className="post-grid">
-          {shown.map((post) => (
-            <PostCard post={post} key={post.id} />
-          ))}
-        </div>
+        {first ? <PostCard post={first} featured /> : null}
+        {rest.length ? (
+          <div className="post-grid">
+            {rest.map((post) => (
+              <PostCard post={post} key={post.id} />
+            ))}
+          </div>
+        ) : null}
       </div>
+      <CtaBand />
     </Shell>
   );
 }
 
+function ArticleHeader({ kicker, kickerHref, date, title, summary, pills }) {
+  return (
+    <header className="article-header">
+      <p className="article-kicker">
+        <a href={kickerHref}>{kicker}</a>
+        {date ? (
+          <>
+            <span aria-hidden="true">·</span>
+            {date}
+          </>
+        ) : null}
+      </p>
+      <h1>{title}</h1>
+      {pills}
+      <p className="article-lead">{summary}</p>
+    </header>
+  );
+}
+
 export function PostPage({ slug }) {
-  const { lang, homePath } = useLang();
+  const { lang } = useLang();
   const t = UI[lang];
   const post = postBySlug(lang, slug);
   if (!post) return <NotFoundPage />;
@@ -360,38 +432,34 @@ export function PostPage({ slug }) {
   const others = POSTS.filter((o) => o.id !== post.id).slice(0, 3);
   return (
     <Shell>
-      <article className="subpage-inner post">
-        <Breadcrumbs
-          items={[
-            { label: t.home, href: homePath },
-            { label: t.blog, href: pathFor("blog", lang) },
-            { label: p.h1 },
-          ]}
-        />
-        <header className="subpage-header">
-          <p className="post-meta">
-            <span>{CATEGORIES[post.category]?.[lang]}</span>
-            <time dateTime={post.datePublished}>{formatDate(post.datePublished, lang)}</time>
-          </p>
-          <h1>{p.h1}</h1>
-          <p className="subpage-summary">{p.summary}</p>
-        </header>
-        <Hero image={post.heroImage} alt={p.heroAlt} />
-        <div className="post-body">
-          <Sections sections={p.sections} />
-          <Faq items={p.faq} />
+      <article className="article">
+        <CoverImage image={post.heroImage} alt={p.heroAlt} className="article-cover" sizes="(max-width: 1168px) calc(100vw - 32px), 1120px" priority />
+        <div className="article-column">
+          <ArticleHeader
+            kicker={t.blog}
+            kickerHref={pathFor("blog", lang)}
+            date={<time dateTime={post.datePublished}>{formatDate(post.datePublished, lang)}</time>}
+            title={p.h1}
+            summary={p.summary}
+            pills={<Pills post={post} />}
+          />
+          <div className="article-body">
+            <Sections sections={p.sections} />
+            <Faq items={p.faq} />
+          </div>
         </div>
-        {others.length ? (
-          <nav className="post-related" aria-label={t.related}>
-            <h2>{t.related}</h2>
-            <div className="post-grid">
-              {others.map((o) => (
-                <PostCard post={o} key={o.id} />
-              ))}
-            </div>
-          </nav>
-        ) : null}
       </article>
+      {others.length ? (
+        <nav className="read-more" aria-labelledby="read-more-title">
+          <h2 id="read-more-title">{t.more}</h2>
+          <div className="post-grid">
+            {others.map((o) => (
+              <PostCard post={o} key={o.id} />
+            ))}
+          </div>
+        </nav>
+      ) : null}
+      <CtaBand />
     </Shell>
   );
 }
@@ -403,16 +471,14 @@ export function LotsPage() {
   const hasForm = p.sections.some((s) => s.blocks.some((b) => b.contactForm));
   return (
     <Shell>
-      <article className="subpage-inner lots-page">
-        <Breadcrumbs items={[{ label: t.home, href: homePath }, { label: t.lots }]} />
-        <header className="subpage-header">
-          <h1>{p.h1}</h1>
-          <p className="subpage-summary">{p.summary}</p>
-        </header>
-        <Hero image={LOTS.heroImage || "/assets/hero-desktop.jpg"} alt={p.heroAlt} />
-        <div className="post-body">
-          <Sections sections={p.sections} />
-          <Faq items={p.faq} />
+      <article className="article">
+        <CoverImage image={LOTS.heroImage || "/assets/hero-desktop.jpg"} alt={p.heroAlt} className="article-cover" sizes="(max-width: 1168px) calc(100vw - 32px), 1120px" priority />
+        <div className="article-column">
+          <ArticleHeader kicker={t.home} kickerHref={homePath} title={p.h1} summary={p.summary} />
+          <div className="article-body">
+            <Sections sections={p.sections} />
+            <Faq items={p.faq} />
+          </div>
         </div>
       </article>
       {hasForm ? <Contact withFaq={false} /> : null}
@@ -425,14 +491,16 @@ export function NotFoundPage() {
   const t = UI[lang];
   return (
     <Shell>
-      <div className="subpage-inner not-found">
-        <header className="subpage-header">
+      <div className="journal not-found">
+        <header className="journal-header">
+          <p className="journal-eyebrow">404</p>
           <h1>{t.notFoundTitle}</h1>
-          <p className="subpage-summary">{t.notFoundBody}</p>
+          <p>{t.notFoundBody}</p>
+          <div className="cta-band-actions">
+            <a className="button-solid" href={homePath}>{t.home}</a>
+            <a className="button-ghost" href={pathFor("lots", lang)}>{t.lots}</a>
+          </div>
         </header>
-        <p className="lots-page-link">
-          <a href={homePath}>{t.home} &rarr;</a> <a href={pathFor("lots", lang)}>{t.lots} &rarr;</a>
-        </p>
       </div>
     </Shell>
   );
