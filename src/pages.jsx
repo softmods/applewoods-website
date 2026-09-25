@@ -317,12 +317,13 @@ const readMinutes = (p) => {
   return Math.max(1, Math.round(words / 220));
 };
 
-function Pills({ post }) {
+// Cards show lane and reading time; the article header adds the category.
+function Pills({ post, compact }) {
   const { lang } = useLang();
   return (
     <ul className="pills" aria-label={lang === "es" ? "Detalles" : "Details"}>
       <li className={"pill-lane is-" + (post.lane || "guide")}>{UI[lang].lanes[post.lane || "guide"]}</li>
-      <li>{CATEGORIES[post.category]?.[lang]}</li>
+      {compact ? null : <li>{CATEGORIES[post.category]?.[lang]}</li>}
       <li>{UI[lang].minRead(readMinutes(post[lang]))}</li>
     </ul>
   );
@@ -412,7 +413,7 @@ function PostCard({ post, featured }) {
           <a href={href}>{p.h1}</a>
         </h2>
         <p>{featured ? p.summary : p.description}</p>
-        <Pills post={post} />
+        <Pills post={post} compact />
       </div>
     </article>
   );
