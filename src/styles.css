@@ -2184,6 +2184,18 @@ textarea.input {
   line-height: 1.4;
 }
 
+/* SEO eyebrow inside the H1 (proposed, staging). Reads as a label, not a
+   headline, so the client's headline keeps the visual weight. */
+.v2-hero-copy h1 .v2-hero-eyebrow {
+  margin-bottom: 14px;
+  color: #b09a70;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+
 .v2-hero-copy h1 {
   max-width: 880px;
   margin-bottom: 18px;

@@ -9,6 +9,7 @@ import { ContentProvider, useContent, useLang } from "./content";
 import { readLeadSource } from "./lead-source";
 import { imgProps } from "./img.js";
 import { useAlt } from "./seo-alt.js";
+import { SEO } from "./seo.js";
 import "./styles.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -350,6 +351,7 @@ function emphasize(text) {
 
 function V2Hero() {
   const altFor = useAlt();
+  const { lang } = useLang();
   const c = useContent();
   const { hero } = c;
   return (
@@ -358,6 +360,7 @@ function V2Hero() {
         <p>{hero.tagline}</p>
         <div>
           <h1>
+            <span className="v2-hero-eyebrow">{SEO[lang].heroEyebrow}</span>
             <span>{emphasize(hero.headlineLines[0])}</span>
             {" "}
             <span>{emphasize(hero.headlineLines[1])}</span>

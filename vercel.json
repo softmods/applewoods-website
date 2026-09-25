@@ -1,5 +1,12 @@
 {
   "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": ".*\\.vercel\\.app" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
+  ],
   "rewrites": [
     { "source": "/es", "destination": "/es/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }

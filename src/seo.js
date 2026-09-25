@@ -9,6 +9,9 @@ export const SEO = {
     orgDescription:
       "Gated smart community in Brownsville, Texas, with Phase 1 homesites from $85,000.",
     slogan: "Smart Living in Brownsville",
+    // Proposed to the client (2026-09-24): one line above their H1, inside the
+    // H1 tag. Their headline stays word for word. Staging only until they agree.
+    heroEyebrow: "Gated community lots for sale in Brownsville, TX",
   },
   es: {
     title: "Apple Woods | Terrenos en venta en Brownsville, TX",
@@ -17,5 +20,6 @@ export const SEO = {
     orgDescription:
       "Fraccionamiento privado e inteligente en Brownsville, Texas, con terrenos de Fase 1 desde $85,000.",
     slogan: "Vida inteligente en Brownsville",
+    heroEyebrow: "Terrenos en venta en Brownsville, TX",
   },
 };
