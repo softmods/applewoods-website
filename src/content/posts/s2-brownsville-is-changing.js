@@ -5,7 +5,7 @@ export default {
   facts: ["location", "price", "lotSize"],
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
-  heroImage: "/assets/lot-corner.jpg",
+  heroImage: "/assets/journal-brownsville-rocket-launch.png",
   en: {
     slug: "brownsville-growth-new-developments",
     title: "Brownsville, TX growth in 2026: the new developments",
@@ -15,7 +15,7 @@ export default {
     summary:
       "Brownsville had about 193,000 residents in 2025, and the port, Starbase and Rio Grande LNG keep growing around it. When a city changes this much, what we want from a neighborhood changes with it.",
     heroAlt:
-      "Rendering of a two-story modern home at dusk at Apple Woods, a planned gated community in growing Brownsville, TX",
+      "Illustration of a stainless-steel rocket lifting off at sunrise on the Gulf coast, a nod to the space industry growing near Brownsville, TX",
     sections: [
       {
         h2: "Is Brownsville growing?",
@@ -160,7 +160,7 @@ export default {
     summary:
       "Brownsville tenía unos 193,000 habitantes en 2025, y el puerto, Starbase y Rio Grande LNG siguen creciendo a su alrededor. Cuando una ciudad cambia tanto, también cambia lo que esperamos de una colonia.",
     heroAlt:
-      "Render de una casa moderna de dos pisos al atardecer en Apple Woods, fraccionamiento privado planeado en Brownsville, Texas, una ciudad en crecimiento",
+      "Ilustración de un cohete de acero inoxidable despegando al amanecer en la costa del Golfo, en referencia a la industria espacial que crece cerca de Brownsville, Texas",
     sections: [
       {
         h2: "¿Brownsville está creciendo?",
