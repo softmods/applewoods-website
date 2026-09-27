@@ -64,5 +64,11 @@
     "srcSet": "/assets/blog/journal-brownsville-rocket-launch-640.webp 640w, /assets/blog/journal-brownsville-rocket-launch-960.webp 960w, /assets/blog/journal-brownsville-rocket-launch-1440.webp 1440w, /assets/blog/journal-brownsville-rocket-launch-1672.webp 1672w",
     "width": 1672,
     "height": 941
+  },
+  "/assets/journal-apple-tree-home.png": {
+    "src": "/assets/blog/journal-apple-tree-home-960.webp",
+    "srcSet": "/assets/blog/journal-apple-tree-home-640.webp 640w, /assets/blog/journal-apple-tree-home-960.webp 960w, /assets/blog/journal-apple-tree-home-1440.webp 1440w, /assets/blog/journal-apple-tree-home-1672.webp 1672w",
+    "width": 1672,
+    "height": 941
   }
 }

@@ -5,7 +5,7 @@ export default {
   facts: ["orchard", "amenities", "price"],
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
-  heroImage: "/assets/aw-water-walk.jpg",
+  heroImage: "/assets/journal-apple-tree-home.png",
   en: {
     slug: "why-apple-woods-is-an-orchard",
     title: "Why is it called Apple Woods? The planned orchard",
@@ -15,7 +15,7 @@ export default {
     summary:
       "Apple Woods is named for the orchard it is planned to become, with at least one fruit tree at every home and streets named after fruits. This post covers what the plan says and why trees and shade matter in South Texas.",
     heroAlt:
-      "Rendering of the planned Water Walk at Apple Woods in Brownsville, TX, a stone-edged water channel with waterfalls between modern buildings",
+      "Rendering of a one-story home with an apple tree in the front yard at sunset, the planned community orchard at Apple Woods in Brownsville, TX",
     sections: [
       {
         h2: "Why is it called Apple Woods?",
@@ -89,7 +89,7 @@ export default {
             p: "We talk about \"connecting with nature\" as if it were a separate activity. It can be as ordinary as seeing a tree when you step outside, walking the dog in the shade or watching the fruit come in on your own tree.",
           },
           {
-            p: "That is the idea behind the orchard, and the Water Walk in the image above is part of the same plan. Apple Woods calls this Smart Living, and [What is Smart Living?](/blog/what-is-smart-living) covers the rest of it.",
+            p: "That is the idea behind the orchard, and the planned Water Walk is part of the same plan. Apple Woods calls this Smart Living, and [What is Smart Living?](/blog/what-is-smart-living) covers the rest of it.",
           },
           {
             p: "If you want to see which homesites are open in Phase 1, the [lots page](/lots) has current prices.",
@@ -129,7 +129,7 @@ export default {
     summary:
       "Apple Woods toma su nombre del huerto que está planeado para ser, con al menos un árbol frutal en cada casa y calles con nombres de frutas. Aquí te contamos qué dice el plan y por qué los árboles y la sombra importan en el sur de Texas.",
     heroAlt:
-      "Render del Water Walk planeado en Apple Woods, Brownsville, TX, un canal de agua con bordes de piedra y cascadas entre edificios modernos",
+      "Render de una casa de un piso con un manzano en el jardín al atardecer, el huerto comunitario planeado de Apple Woods en Brownsville, TX",
     sections: [
       {
         h2: "¿Por qué se llama Apple Woods?",
@@ -203,7 +203,7 @@ export default {
             p: "Hablamos de \"conectar con la naturaleza\" como si fuera una actividad aparte. Puede ser tan cotidiano como ver un árbol al salir de casa, pasear al perro en la sombra o ver cómo se llena de fruta tu propio árbol.",
           },
           {
-            p: "Esa es la idea detrás del huerto, y el Water Walk de la imagen de arriba es parte del mismo plan. Apple Woods le llama Smart Living, y [¿Qué es Smart Living?](/es/blog/que-es-una-comunidad-inteligente) explica el resto.",
+            p: "Esa es la idea detrás del huerto, y el Water Walk planeado es parte del mismo plan. Apple Woods le llama Smart Living, y [¿Qué es Smart Living?](/es/blog/que-es-una-comunidad-inteligente) explica el resto.",
           },
           {
             p: "Si quieres ver qué terrenos están disponibles en la Fase 1, la [página de terrenos](/es/terrenos) tiene los precios actuales.",

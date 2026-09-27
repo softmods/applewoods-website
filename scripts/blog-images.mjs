@@ -26,6 +26,7 @@ const IMAGES = [
   // [src, quality]: dedicated journal covers keep more detail than the defaults.
   ["/assets/journal-smart-crosswalk-sign.png", 88],
   ["/assets/journal-brownsville-rocket-launch.png", 88],
+  ["/assets/journal-apple-tree-home.png", 88],
 ];
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
