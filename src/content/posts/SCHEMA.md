@@ -13,6 +13,7 @@ export default {
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
   heroImage: "/assets/hero-desktop.jpg", // an existing asset, see list below
+  heroPosition: "50% 0%",           // optional CSS object-position when the crop cuts the subject
   en: {
     slug: "best-place-to-buy-a-lot-brownsville",
     title: "Where Is the Best Place to Buy a Lot in Brownsville?", // <title>, 60 chars max, no brand (build appends " | Apple Woods" only if it fits)

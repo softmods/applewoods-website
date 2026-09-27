@@ -6,6 +6,7 @@ export default {
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
   heroImage: "/assets/journal-brownsville-rocket-launch.png",
+  heroPosition: "50% 0%", // keep the rocket nose in frame when the cover crops
   en: {
     slug: "brownsville-growth-new-developments",
     title: "Brownsville, TX growth in 2026: the new developments",

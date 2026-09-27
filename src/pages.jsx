@@ -397,11 +397,12 @@ function JournalSignup() {
   );
 }
 
-function CoverImage({ image, alt, sizes, className, priority }) {
+function CoverImage({ image, alt, sizes, className, priority, position }) {
   return (
     <figure className={className}>
       <img
         {...heroImgProps(image, sizes)}
+        style={position ? { objectPosition: position } : undefined}
         alt={alt}
         loading={priority ? "eager" : "lazy"}
         fetchpriority={priority ? "high" : undefined}
@@ -422,6 +423,7 @@ function PostCard({ post, featured }) {
       <CoverImage
         image={post.heroImage}
         alt=""
+        position={post.heroPosition}
         className="post-card-image"
         sizes={featured ? "(max-width: 760px) calc(100vw - 56px), 600px" : "(max-width: 760px) calc(100vw - 56px), 360px"}
       />
@@ -530,7 +532,7 @@ export function PostPage({ slug }) {
   return (
     <Shell>
       <article className="article">
-        <CoverImage image={post.heroImage} alt={p.heroAlt} className="article-cover" sizes="(max-width: 1168px) calc(100vw - 32px), 1120px" priority />
+        <CoverImage image={post.heroImage} alt={p.heroAlt} position={post.heroPosition} className="article-cover" sizes="(max-width: 1168px) calc(100vw - 32px), 1120px" priority />
         <div className="article-column">
           <ArticleHeader
             kicker={t.blog}
