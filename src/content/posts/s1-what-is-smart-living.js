@@ -6,7 +6,7 @@ export default {
   facts: ["smart", "gated", "price", "homeSize"],
   datePublished: "2026-09-25",
   dateModified: "2026-09-25",
-  heroImage: "/assets/beautyaw.png",
+  heroImage: "/assets/journal-smart-crosswalk-sign.png",
   en: {
     slug: "what-is-smart-living",
     title: "What is smart living? Tech you don't have to think about",
@@ -16,7 +16,7 @@ export default {
     summary:
       "Smart living means using technology so your home asks less of your attention. A smart community applies the same idea to the gate, the streetlights, the internet and the shared spaces outside your door.",
     heroAlt:
-      "Rendering of a modern home on a landscaped street at dusk at Apple Woods, a planned smart living community in Brownsville, TX",
+      "Rendering of a planned smart crosswalk sign with a lit pedestrian signal on a landscaped street at dusk in Apple Woods, a smart living community in Brownsville, TX",
     sections: [
       {
         h2: "What is smart living?",
@@ -170,7 +170,7 @@ export default {
     summary:
       "Smart Living, o vivir inteligente, es usar la tecnología para que tu casa te pida menos atención. Una comunidad inteligente lleva esa idea a la entrada, el alumbrado, el internet y las áreas comunes.",
     heroAlt:
-      "Render de una casa moderna en una calle con jardines al atardecer en Apple Woods, una comunidad inteligente planeada en Brownsville, TX",
+      "Render de un señalamiento inteligente de cruce peatonal planeado, iluminado, en una calle con jardines al atardecer en Apple Woods, comunidad inteligente en Brownsville, TX",
     sections: [
       {
         h2: "¿Qué es Smart Living?",

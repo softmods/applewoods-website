@@ -23,11 +23,14 @@ const IMAGES = [
   "/assets/life-clubhouse.jpg",
   "/assets/security-built-in-camera.jpg",
   "/assets/life-outdoor-spaces.jpg",
+  // [src, quality]: dedicated journal covers keep more detail than the defaults.
+  ["/assets/journal-smart-crosswalk-sign.png", 88],
 ];
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 const manifest = {};
-for (const src of IMAGES) {
+for (const entry of IMAGES) {
+  const [src, quality] = Array.isArray(entry) ? entry : [entry, 78];
   const file = path.join(ROOT, "public", src);
   const meta = await sharp(file).metadata();
   const base = path.basename(src).replace(/\.[^.]+$/, "");
@@ -35,7 +38,7 @@ for (const src of IMAGES) {
   const entries = [];
   for (const w of widths) {
     const out = `/assets/blog/${base}-${w}.webp`;
-    await sharp(file).resize({ width: w }).webp({ quality: 78 }).toFile(path.join(ROOT, "public", out));
+    await sharp(file).resize({ width: w }).webp({ quality, effort: 6, smartSubsample: true }).toFile(path.join(ROOT, "public", out));
     entries.push(`${out} ${w}w`);
   }
   manifest[src] = {

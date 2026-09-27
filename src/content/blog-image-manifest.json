@@ -52,5 +52,11 @@
     "srcSet": "/assets/blog/life-outdoor-spaces-640.webp 640w, /assets/blog/life-outdoor-spaces-960.webp 960w, /assets/blog/life-outdoor-spaces-1440.webp 1440w, /assets/blog/life-outdoor-spaces-1672.webp 1672w",
     "width": 1672,
     "height": 941
+  },
+  "/assets/journal-smart-crosswalk-sign.png": {
+    "src": "/assets/blog/journal-smart-crosswalk-sign-960.webp",
+    "srcSet": "/assets/blog/journal-smart-crosswalk-sign-640.webp 640w, /assets/blog/journal-smart-crosswalk-sign-960.webp 960w, /assets/blog/journal-smart-crosswalk-sign-1440.webp 1440w, /assets/blog/journal-smart-crosswalk-sign-1672.webp 1672w",
+    "width": 1672,
+    "height": 941
   }
 }

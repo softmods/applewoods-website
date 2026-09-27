@@ -50,4 +50,4 @@ Hero image options (all renderings): `/assets/hero-desktop.jpg` (gated entrance)
 `/assets/life-maintained-surroundings.jpg` (tree-lined sidewalk), `/assets/lot-classic.jpg`
 (one-story home), `/assets/lot-corner.jpg` (two-story home), `/assets/aw-water-walk.jpg`
 (Water Walk), `/assets/beautyaw.png` (modern home on a street), `/assets/life-clubhouse.jpg`,
-`/assets/security-built-in-camera.jpg`, `/assets/life-outdoor-spaces.jpg` (basketball court).
+`/assets/security-built-in-camera.jpg`, `/assets/life-outdoor-spaces.jpg` (basketball court), `/assets/journal-smart-crosswalk-sign.png` (smart crosswalk sign at dusk).
